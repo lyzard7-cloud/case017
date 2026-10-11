@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#081018">
+<title>CASE 017 · 강일 심화과학반 특별수사팀</title>
+<style>
+:root{
+  --bg:#071018; --panel:#0d1822; --panel2:#101f2b; --line:#203745;
+  --text:#eef7fb; --muted:#8fa6b3; --accent:#47d7ff; --accent2:#ffd86b;
+  --ok:#7be6ad; --warn:#ffcc66; --danger:#ff6b7a; --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
+body{min-height:100dvh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:520px;margin:0 auto;min-height:100dvh;padding:env(safe-area-inset-top) 14px calc(18px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 10px;position:sticky;top:0;background:linear-gradient(var(--bg) 78%,transparent);z-index:20}
+.brand{letter-spacing:.12em;font-size:12px;color:var(--accent)}
+.case{font-size:12px;color:var(--muted)}
+.card{background:linear-gradient(180deg,var(--panel),#0a141d);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin:12px 0}
+.hero{padding:28px 20px 22px}
+.kicker{color:var(--accent);font-size:12px;letter-spacing:.14em;margin-bottom:10px}
+h1{font-size:28px;line-height:1.18;margin:0 0 10px;font-weight:600}
+h2{font-size:21px;line-height:1.3;margin:0 0 12px;font-weight:600}
+h3{font-size:16px;margin:0 0 10px;font-weight:600}
+p{line-height:1.7;color:#d7e3e9;margin:8px 0}
+.muted{color:var(--muted);font-size:13px}
+.small{font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;min-height:52px;border-radius:14px;border:1px solid var(--line);background:#132532;color:var(--text);padding:12px 14px}
+.btn.primary{background:linear-gradient(135deg,#0b93bd,#146b94);border-color:#28b9e4}
+.btn.secondary{background:#0b151e}
+.btn.warn{background:#3a2b0c;border-color:#74591a;color:#ffe9a6}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.field{margin:12px 0}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+input,select{width:100%;min-height:50px;border-radius:13px;border:1px solid var(--line);background:#09141d;color:var(--text);padding:0 13px;outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;font-size:11px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.dot.ok{background:var(--ok)} .dot.current{background:var(--accent)} .dot.lock{background:#60717b}
+.quest{display:flex;gap:13px;align-items:flex-start;padding:15px;border:1px solid var(--line);border-radius:17px;margin:10px 0;background:#0a151e}
+.quest .num{flex:0 0 42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#102b3a;color:var(--accent);font-size:13px}
+.quest .body{flex:1}
+.quest .title{font-size:15px;margin:2px 0 4px}
+.quest .desc{font-size:12px;color:var(--muted);line-height:1.5}
+.quest.locked{opacity:.5}
+.quest.done{border-color:#24543d}
+.quest.current{border-color:#1f7894;background:#0b1b25}
+.progress{height:8px;background:#09121a;border-radius:999px;overflow:hidden;border:1px solid #152631}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,#28b6dd,#58e4ff);width:0%}
+.screen{display:none}
+.screen.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+.notice{border-left:3px solid var(--accent);background:#0a1720;padding:11px 12px;border-radius:10px;font-size:13px;color:#cfe1e8;line-height:1.6;margin:12px 0}
+.warning{border-left-color:var(--warn)}
+.danger{border-left-color:var(--danger)}
+.okay{border-left-color:var(--ok)}
+.cameraWrap{position:relative;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:3/4;border:1px solid var(--line);margin:12px 0}
+video{width:100%;height:100%;object-fit:cover;background:#000}
+.reticle{position:absolute;inset:50% auto auto 50%;width:38%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.75);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.18)}
+.sensorRow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.metric{background:#08131b;border:1px solid var(--line);border-radius:14px;padding:12px 10px;text-align:center}
+.metric b{display:block;font-size:20px;font-weight:600;color:#fff}
+.metric span{font-size:10px;color:var(--muted)}
+.canvasWrap{height:140px;border:1px solid var(--line);border-radius:14px;background:#061018;overflow:hidden;margin:10px 0}
+canvas{width:100%;height:100%}
+.readings{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.reading{padding:12px;border-radius:12px;border:1px solid var(--line);background:#08131b}
+.reading .v{font-size:22px;color:var(--accent2)}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice button{min-height:58px;border-radius:14px;border:1px solid var(--line);background:#0c1821;color:var(--text)}
+.choice button.selected{border-color:var(--accent);background:#0f2a36}
+.timeline{display:flex;gap:7px;overflow:auto;padding:4px 0 8px}
+.pill{white-space:nowrap;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:11px;color:var(--muted)}
+.pill.on{color:#051017;background:var(--accent);border-color:var(--accent)}
+.stimulus{min-height:110px;display:grid;place-items:center;text-align:center;font-size:29px;letter-spacing:.02em;border:1px solid #285063;border-radius:18px;background:radial-gradient(circle at center,#123040,#08141d)}
+.gel{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.lane{height:220px;background:linear-gradient(#061018,#07131b);border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden}
+.lane .lab{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+.band{position:absolute;left:18%;right:18%;height:6px;border-radius:5px;background:#ff5362;box-shadow:0 0 9px rgba(255,83,98,.38)}
+.suspect-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.suspect{border:1px solid var(--line);background:#09141d;border-radius:14px;padding:13px;text-align:center}
+.suspect.sel{border-color:var(--accent);background:#0c2834}
+.codebox{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.05em;background:#050d13;border:1px dashed #35627a;border-radius:14px;padding:18px;text-align:center;font-size:20px;color:#dff7ff}
+.final{min-height:75dvh;display:flex;align-items:center}
+.finalSeal{width:110px;height:110px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;border:1px solid #2d7a59;color:var(--ok);box-shadow:0 0 50px rgba(123,230,173,.1);font-size:46px}
+.sep{height:1px;background:var(--line);margin:16px 0}
+.teacher-link{font-size:11px;color:#607986;text-align:center;padding:18px 0;text-decoration:underline}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{width:min(520px,100%);max-height:90dvh;overflow:auto;background:#0b151e;border:1px solid var(--line);border-radius:24px 24px 0 0;padding:20px 16px calc(22px + env(safe-area-inset-bottom))}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:200;background:#10232e;color:#fff;border:1px solid #2c586d;padding:10px 14px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.2s}
+.toast.on{opacity:1;bottom:36px}
+.hint{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:#09141d}.hint.lock{opacity:.42}
+.hide{display:none!important}
+@media (min-width:700px){.app{max-width:560px}.hero{padding:34px 26px}.cameraWrap{aspect-ratio:4/5}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">강일 심화과학반 특별수사팀</div>
+    <div class="case">CASE #2026-017</div>
+  </div>
+
+  <section id="start" class="screen active">
+    <div class="card hero">
+      <div class="kicker">MOBILE FORENSIC LAB</div>
+      <h1>CASE 017 · 과학실 살인사건</h1>
+      <p>스마트폰을 과학수사 장비로 사용해 증거를 확보하고 진짜 범인을 찾아내십시오.</p>
+      <div class="notice">4명씩 한 팀으로 움직입니다. 각자의 스마트폰으로 접속하되, 증거 해석과 최종 판단은 팀이 함께 합니다.</div>
+      <div class="field">
+        <label>요원 이름</label>
+        <input id="agentName" placeholder="예: 원선보">
+      </div>
+      <div class="field">
+        <label>수사팀</label>
+        <select id="team">
+          <option value="A">A 수사팀</option><option value="B">B 수사팀</option>
+          <option value="C">C 수사팀</option><option value="D">D 수사팀</option>
+        </select>
+      </div>
+      <div class="field"><label>현재 수사팀 인원</label><select id="teamSize"><option value="4">4명</option><option value="3">3명</option><option value="2">2명</option></select></div>
+      <button class="btn primary" onclick="beginCase()">특별수사 임무 시작</button>
+    </div>
+  </section>
+
+  <section id="brief" class="screen">
+    <div class="card">
+      <div class="kicker">CASE BRIEFING</div>
+      <h2>사건 개요</h2>
+      <p>과학실에서 연구원이 숨진 채 발견되었습니다. 현장에는 정체불명의 노란 용액, 비정상적인 이동 흔적, 생체신호 기록, 그리고 피해자의 손톱 아래에 남은 혈액이 발견되었습니다.</p>
+      <p>범인은 외부인이 아닐 가능성이 높습니다. 여러분의 임무는 네 종류의 과학적 증거를 확보한 뒤, DNA 결과와 함께 최종 용의자를 특정하는 것입니다.</p>
+      <div class="notice warning">증거 하나만으로 사람을 범인으로 단정하지 마십시오. 각 퀘스트의 결과를 종합해 가장 타당한 결론을 내려야 합니다.</div>
+      <button class="btn primary" onclick="openDashboard()">수사 대시보드 열기</button>
+    </div>
+  </section>
+
+  <section id="dash" class="screen">
+    <div class="card">
+      <div class="kicker">FIELD DASHBOARD</div>
+      <h2><span id="teamLabel">A</span> 수사팀</h2>
+      <p class="muted">요원 <span id="agentLabel"></span> · 진행률 <span id="progressText">0%</span></p>
+      <div class="progress"><i id="progressBar"></i></div>
+    </div>
+    <div id="questList"></div>
+    <div class="card">
+      <h3>최종 위치 추적</h3>
+      <p class="muted">네 개의 과학수사 퀘스트를 완료하면 QUEST 5가 활성화됩니다.</p>
+      <button id="q5Btn" class="btn" disabled onclick="openQuest(5)">QUEST 5 열기</button>
+    </div>
+  </section>
+
+  <section id="q1" class="screen">
+    <div class="card">
+      <div class="kicker">QUEST 1 · CHEMICAL ANALYSIS</div>
+      <h2>바꿔치기된 비타민 병</h2>
+      <p>피해자의 책상 위에서 노란색 액체가 담긴 두 병이 발견되었습니다. 겉보기에는 거의 같지만 둘 중 하나만 실제 비타민 C의 화학적 성질을 나타냅니다. 아이오딘 반응을 이용해 진짜 비타민 C 시료를 찾아내십시오.</p>
+      <div class="notice">겉모습을 믿지 마십시오. 범인은 바로 그 점을 노렸을 가능성이 있습니다. 카메라 값은 보조자료이며 실제 화학 반응 결과가 우선입니다.</div>
+      <button class="btn secondary" onclick="startCamera('chemVideo','chemCanvas','chemMetrics')">카메라 분석 시작</button>
+      <div class="cameraWrap"><video id="chemVideo" playsinline muted></video><div class="reticle"></div></div>
+      <div id="chemMetrics" class="sensorRow">
+        <div class="metric"><b>--</b><span>밝기</span></div>
+        <div class="metric"><b>--</b><span>R</span></div>
+        <div class="metric"><b>--</b><span>G</span></div>
+      </div>
+      <div class="sep"></div>
+      <h3>환원 반응이 확인된 시료</h3>
+      <div class="choice">
+        <button onclick="selectChoice('q1','A',this)">시료 A</button>
+        <button onclick="selectChoice('q1','B',this)">시료 B</button>
+      </div>
+      <button class="btn primary" style="margin-top:10px" onclick="submitQ1()">증거 제출</button>
+      <button class="btn ghost" onclick="openDashboard()">대시보드로 돌아가기</button>
+    </div>
+  </section>
+
+  <section id="q2" class="screen">
+    <div class="card">
+      <div class="kicker">QUEST 2 · LIGHT ANALYSIS</div>
+      <h2>어두운 복도의 진술</h2>
+      <p>한도윤은 “복도 조명이 꺼져 있어서 표지판도 제대로 보이지 않았다”고 진술했습니다. 장소 A·B·C·D의 상대 밝기와 실제 표지판 식별 여부를 비교해 이 진술을 검증하십시오.</p>
+      <div class="notice warning">전문 조도계가 아니므로 절대 lux 값이 아닌 상대 밝기 지수로 비교합니다.</div>
+      <button class="btn secondary" onclick="startLightCamera()">광센서 시작</button>
+      <div class="cameraWrap"><video id="lightVideo" playsinline muted></video><div class="reticle"></div></div>
+      <div class="sensorRow">
+        <div class="metric"><b id="lightValue">--</b><span>밝기 지수</span></div>
+        <div class="metric"><b id="lightState">--</b><span>상태</span></div>
+        <div class="metric"><b id="lightCount">0</b><span>저장 측정</span></div>
+      </div>
+      <div class="grid2">
+        <button class="btn" onclick="saveLightReading()">현재 값 저장</button>
+        <button class="btn ghost" onclick="clearLightReadings()">측정 초기화</button>
+      </div>
+      <div id="lightReadings" class="readings" style="margin-top:10px"></div>
+      <div class="sep"></div>
+      <h3>범행 당시 조건과 가장 가까운 장소</h3>
+      <div class="choice">
+        <button onclick="selectChoice('q2','A',this)">장소 A</button>
+        <button onclick="selectChoice('q2','B',this)">장소 B</button>
+        <button onclick="selectChoice('q2','C',this)">장소 C</button>
+        <button onclick="selectChoice('q2','D',this)">장소 D</button>
+      </div>
+      <button class="btn primary" style="margin-top:10px" onclick="submitQ2()">증거 제출</button>
+      <button class="btn ghost" onclick="openDashboard()">대시보드로 돌아가기</button>
+    </div>
+  </section>
+
+  <section id="q3" class="screen">
+    <div class="card">
+      <div class="kicker">QUEST 3 · BIO-SIGNAL ANALYSIS</div>
+      <h2>범인은 이 단어를 알고 있다</h2>
+      <p>모둠에서 피실험자 1명을 정하고, 피실험자만 비밀 단어를 확인한 뒤 스마트폰 PPG로 여러 단어에 대한 생체신호 변화를 측정합니다. 체험 후에는 국과수가 확보한 한도윤의 기록을 해석합니다.</p>
+      <div class="notice danger">생체신호 변화는 거짓말이나 범행을 직접 증명하지 않습니다. 특정 자극에 대한 반응 변화만 관찰합니다.</div>
+      <button class="btn secondary" onclick="revealSecretWord()">피실험자만 비밀 단어 확인</button>
+      <div id="secretWordBox" class="notice hide"></div>
+      <button class="btn secondary" onclick="startPPGCamera()">생체신호 카메라 시작</button>
+      <div class="cameraWrap"><video id="ppgVideo" playsinline muted></video><div class="reticle"></div></div>
+      <div class="sensorRow">
+        <div class="metric"><b id="bpm">--</b><span>BPM</span></div>
+        <div class="metric"><b id="quality">--</b><span>신호품질</span></div>
+        <div class="metric"><b id="ppgPhase">대기</b><span>단계</span></div>
+      </div>
+      <div class="canvasWrap"><canvas id="ppgCanvas" width="420" height="140"></canvas></div>
+      <div class="stimulus" id="stimulus">측정 준비</div>
+      <div class="timeline" id="stimTimeline"></div>
+      <button id="ppgStartBtn" class="btn primary" onclick="runStimulusTest()">자극 테스트 시작</button>
+      <button class="btn ghost" onclick="completeQ3Fallback()">측정 환경이 어려운 경우 활동 완료 처리</button>
+      <div id="q3CaseData" class="hide">
+        <div class="sep"></div>
+        <div class="kicker">SUSPECT #02 · 국과수 기록</div>
+        <h3>한도윤 생체신호 분석 결과</h3>
+        <div class="notice">현미경 +2.4% · USB +1.9% · 비커 +3.1% · <br><br>보라색 라텍스 장갑 +12.4% · 복사기 +2.7% · 유리병 +3.0%</div>
+        <div class="notice danger">‘보라색 라텍스 장갑’은 사건 현장에서 발견되었지만 외부에는 공개되지 않은 정보입니다.</div>
+        <button class="btn primary" onclick="completeQuest(3,'EVIDENCE #03 확보')">EVIDENCE #03 저장</button>
+      </div>
+      <button class="btn ghost" onclick="openDashboard()">대시보드로 돌아가기</button>
+    </div>
+  </section>
+
+  <section id="q4" class="screen">
+    <div class="card">
+      <div class="kicker">QUEST 4 · DNA ANALYSIS</div>
+      <h2>피해자의 손톱 아래에 남은 흔적</h2>
+      <p>피해자의 손톱 아래에서 피해자의 것이 아닌 혈액이 발견되었습니다. 전기영동 결과를 해독하고, 이동거리와 STR 반복 횟수의 관계를 이용해 용의자들의 DNA를 비교하십시오.</p>
+      <div class="notice">DNA 조각이 짧을수록 더 멀리 이동하며, STR 반복 횟수가 많을수록 DNA 조각은 길어집니다.</div>
+      <h3>STEP 1 · 원리 확인</h3>
+      <p class="muted">가장 멀리 이동한 DNA 조각은 STR 반복 횟수가 어떻게 될 가능성이 높습니까?</p>
+      <div class="choice"><button onclick="q4Principle(false,this)">반복 횟수가 많다</button><button onclick="q4Principle(true,this)">반복 횟수가 적다</button></div>
+      <div id="q4Decode" class="hide">
+        <div class="sep"></div><h3>STEP 2 · 현장 DNA 해독</h3>
+        <div class="notice">기준표: 9cm→2, 8cm→3, 7cm→4, 6cm→5, 5cm→6, 4cm→7, 3cm→8, 2cm→9</div>
+        <p>현장 이동거리: 9 · 7 · 5 · 4 · 2 cm</p>
+        <input id="sceneSTR" placeholder="STR 반복 횟수를 쉼표로 입력 (예: 1,2,3,4,5)">
+        <button class="btn" onclick="decodeSceneSTR()">현장 DNA 해독</button>
+      </div>
+      <div id="q4Assignments" class="hide"></div>
+      <div class="gel" id="gel"></div>
+      <div class="sep"></div>
+      <h3>현장 DNA와 가장 일치하는 용의자</h3>
+      <div class="suspect-grid" id="suspects"></div>
+      <div class="notice warning">CHECKPOINT · 용의자 #5는 5개 중 4개가 일치합니다. 동일한 DNA 시료라고 판단해도 될까요?</div>
+      <div class="choice"><button onclick="q4Trap(false,this)">그렇다</button><button onclick="q4Trap(true,this)">아니다</button></div>
+      <button class="btn primary" style="margin-top:10px" onclick="submitQ4()">최종 DNA 증거 제출</button>
+      <button class="btn ghost" onclick="openDashboard()">대시보드로 돌아가기</button>
+    </div>
+  </section>
+
+  <section id="q5" class="screen">
+    <div class="card">
+      <div class="kicker">QUEST 5 · LOCATION TRACE</div>
+      <h2>마지막 증거의 위치</h2>
+      <p>한도윤이 사건 이후 숨겨 놓은 마지막 증거의 위치와 관련된 정보가 확보되었습니다. 처음에는 세 단어만 제공되며, 3분마다 힌트가 하나씩 해금됩니다.</p>
+      <div id="w3wPending" class="notice warning">최종 위치는 아직 교사가 등록하지 않았습니다. 위치를 직접 확인한 뒤 교사용 설정에서 세 단어 좌표를 입력하면 이 화면에 표시됩니다.</div>
+      <div id="w3wBox" class="codebox hide"></div>
+      <p class="muted">좌표에 도착하면 실제 NFC 태그를 찾으십시오. 스마트폰으로 태그를 읽으면 사건 종료 화면이 열립니다.</p>
+      <div id="q5Hints"></div>
+      <button class="btn" onclick="revealNextHint()">다음 힌트 확인</button>
+      <button class="btn ghost" onclick="openDashboard()">대시보드로 돌아가기</button>
+    </div>
+  </section>
+
+  <section id="final" class="screen final">
+    <div class="card" style="width:100%;text-align:center">
+      <div class="finalSeal">✓</div>
+      <div class="kicker">CASE CLOSED</div>
+      <h1>수사 종료</h1>
+      <p>여러분은 과학적 증거를 분석하고 팀의 판단을 종합해 사건을 해결했습니다.</p>
+      <div class="notice okay">과학은 범인을 “찍는” 과정이 아니라, 관찰·측정·비교·추론을 통해 가장 타당한 결론을 찾아가는 과정입니다.</div>
+      <div class="sep"></div>
+      <p class="muted"><span id="finalTeam">A</span> 수사팀 · 완료 시간 <span id="elapsed">--:--:--</span></p>
+    </div>
+  </section>
+
+  <div class="teacher-link" onclick="openTeacher()">교사용 설정</div>
+</div>
+
+<div id="teacherModal" class="modal">
+  <div class="sheet">
+    <div class="kicker">TEACHER CONTROL</div>
+    <h2>교사용 설정</h2>
+    <div id="teacherLogin">
+      <div class="field"><label>교사용 PIN</label><input id="teacherPin" type="password" inputmode="numeric" placeholder="PIN 입력"></div>
+      <button class="btn primary" onclick="teacherLogin()">열기</button>
+      <button class="btn ghost" onclick="closeTeacher()">닫기</button>
+    </div>
+    <div id="teacherPanel" class="hide">
+      <div class="field"><label>QUEST 1 정답 시료</label><select id="setQ1"><option>A</option><option>B</option></select></div>
+      <div class="field"><label>QUEST 2 정답 장소</label><select id="setQ2"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+      <div class="field"><label>QUEST 4 정답 용의자</label><select id="setQ4"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div class="field"><label>QUEST 5 w3w 세 단어 좌표</label><input id="setW3W" placeholder="예: 바다.연필.별빛"></div>
+      <div class="field"><label>최종 NFC에 기록할 주소</label><input id="finalUrl" readonly></div>
+      <button class="btn primary" onclick="saveTeacher()">설정 저장</button>
+      <div class="grid2" style="margin-top:10px">
+        <button class="btn warn" onclick="resetProgress()">현재 기기 진행 초기화</button>
+        <button class="btn ghost" onclick="closeTeacher()">닫기</button>
+      </div>
+      <p class="muted small">기본 PIN은 017입니다. 이 설정은 현재 기기에만 저장됩니다. 실제 수업용 다기기 동기화는 Firebase 연결 버전에서 추가할 수 있습니다.</p>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const DEFAULTS={q1:"A",q2:"D",q4:"2",w3w:"",pin:"017"};
+let settings=JSON.parse(localStorage.getItem("case017_settings")||"null")||DEFAULTS;
+let state=JSON.parse(localStorage.getItem("case017_state")||"null")||{
+  agent:"",team:"A",teamSize:4,startedAt:null,completed:[],choice:{},light:[],q3done:false
+};
+const orders={A:[1,2,3,4],B:[2,3,4,1],C:[3,4,1,2],D:[4,1,2,3]};
+const titles={
+  1:["노란 병의 정체","화학 · 환원 반응"],
+  2:["범인은 어둠 속에서 무엇을 보았나","빛 · 카메라 센서"],
+  3:["거짓말하는 용의자","생체신호 · PPG"],
+  4:["보이지 않는 지문","DNA · STR · 전기영동"]
+};
+let activeStream=null, cameraRAF=null, lightLatest=0;
+let ppgRAF=null, ppgSamples=[], ppgPeaks=[], ppgLastPeak=0, ppgBpm=0, ppgRunning=false;
+let stimulusResults={};
+
+function saveState(){localStorage.setItem("case017_state",JSON.stringify(state))}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1900)}
+function show(id){
+  stopCamera();
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function stopCamera(){
+  if(activeStream){activeStream.getTracks().forEach(t=>t.stop());activeStream=null}
+  if(cameraRAF){cancelAnimationFrame(cameraRAF);cameraRAF=null}
+  if(ppgRAF){cancelAnimationFrame(ppgRAF);ppgRAF=null}
+  ppgRunning=false;
+}
+function beginCase(){
+  const name=document.getElementById("agentName").value.trim();
+  if(!name){toast("요원 이름을 입력하세요.");return}
+  state.agent=name;state.team=document.getElementById("team").value;state.teamSize=+(document.getElementById("teamSize")?.value||4);
+  if(!state.startedAt)state.startedAt=Date.now();
+  saveState();show("brief");
+}
+function openDashboard(){renderDashboard();show("dash")}
+function renderDashboard(){
+  document.getElementById("teamLabel").textContent=state.team;
+  document.getElementById("agentLabel").textContent=state.agent||"미등록";
+  const pct=Math.round(state.completed.length/4*100);
+  document.getElementById("progressText").textContent=pct+"%";
+  document.getElementById("progressBar").style.width=pct+"%";
+  const order=orders[state.team], current=order.find(q=>!state.completed.includes(q));
+  const wrap=document.getElementById("questList");wrap.innerHTML="";
+  order.forEach((q,i)=>{
+    const done=state.completed.includes(q), cur=q===current;
+    const div=document.createElement("div");
+    div.className="quest "+(done?"done":cur?"current":"locked");
+    div.innerHTML=`<div class="num">Q${q}</div><div class="body"><div class="title">${titles[q][0]}</div><div class="desc">${titles[q][1]} · ${done?"완료":cur?"현재 임무":"잠김"}</div></div><div class="badge"><span class="dot ${done?"ok":cur?"current":"lock"}"></span>${done?"DONE":cur?"OPEN":"LOCK"}</div>`;
+    if(done||cur)div.onclick=()=>openQuest(q);
+    wrap.appendChild(div);
+  });
+  const q5=document.getElementById("q5Btn");
+  q5.disabled=state.completed.length<4;
+  q5.textContent=state.completed.length<4?"QUEST 5 잠김":"QUEST 5 · 위치 추적";
+}
+function openQuest(n){
+  if(n<=4){
+    const order=orders[state.team], current=order.find(q=>!state.completed.includes(q));
+    if(!state.completed.includes(n)&&n!==current){toast("현재 임무를 먼저 완료하세요.");return}
+  }
+  if(n===4)renderGel();
+  if(n===5)renderQ5();
+  show("q"+n);
+}
+function completeQuest(n,msg){
+  if(!state.completed.includes(n))state.completed.push(n);
+  saveState();toast(msg||`QUEST ${n} 완료`);setTimeout(openDashboard,900);
+}
+function selectChoice(q,val,el){
+  state.choice[q]=val;saveState();
+  el.parentElement.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));
+  el.classList.add("selected");
+}
+async function getRearCamera(videoId,torch=false){
+  stopCamera();
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error("camera unavailable");
+  activeStream=await navigator.mediaDevices.getUserMedia({
+    video:{facingMode:{ideal:"environment"},width:{ideal:640},height:{ideal:480}},
+    audio:false
+  });
+  const v=document.getElementById(videoId);v.srcObject=activeStream;await v.play();
+  if(torch){
+    const track=activeStream.getVideoTracks()[0];
+    try{const cap=track.getCapabilities?.();if(cap&&cap.torch)await track.applyConstraints({advanced:[{torch:true}]})}catch(e){}
+  }
+  return v;
+}
+function sampleFrame(video,canvas){
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  const w=64,h=64;canvas.width=w;canvas.height=h;
+  ctx.drawImage(video,video.videoWidth*.35,video.videoHeight*.35,video.videoWidth*.3,video.videoHeight*.3,0,0,w,h);
+  const d=ctx.getImageData(0,0,w,h).data;
+  let r=0,g=0,b=0,n=d.length/4;
+  for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
+  r/=n;g/=n;b/=n;
+  const lum=.2126*r+.7152*g+.0722*b;
+  return {r,g,b,lum};
+}
+async function startCamera(videoId,canvasId,metricsId){
+  try{
+    const v=await getRearCamera(videoId,false);
+    const c=document.getElementById(canvasId)||document.createElement("canvas");
+    const metrics=document.getElementById(metricsId);
+    const loop=()=>{
+      if(!v.videoWidth){cameraRAF=requestAnimationFrame(loop);return}
+      const m=sampleFrame(v,c);
+      metrics.innerHTML=`<div class="metric"><b>${Math.round(m.lum)}</b><span>밝기</span></div><div class="metric"><b>${Math.round(m.r)}</b><span>R</span></div><div class="metric"><b>${Math.round(m.g)}</b><span>G</span></div>`;
+      cameraRAF=requestAnimationFrame(loop);
+    };loop();
+  }catch(e){toast("카메라 권한 또는 HTTPS 연결을 확인하세요.");}
+}
+function submitQ1(){
+  const v=state.choice.q1;if(!v){toast("시료를 선택하세요.");return}
+  if(v===settings.q1)completeQuest(1,"EVIDENCE #01 확보");
+  else toast("실험 결과와 일치하지 않습니다. 다시 확인하세요.");
+}
+
+async function startLightCamera(){
+  try{
+    const v=await getRearCamera("lightVideo",false);
+    const c=document.createElement("canvas");
+    const loop=()=>{
+      if(!v.videoWidth){cameraRAF=requestAnimationFrame(loop);return}
+      const m=sampleFrame(v,c);
+      lightLatest=Math.max(0,Math.min(100,Math.round(m.lum/255*100)));
+      document.getElementById("lightValue").textContent=lightLatest;
+      document.getElementById("lightState").textContent=lightLatest<20?"매우 어두움":lightLatest<40?"어두움":lightLatest<65?"보통":"밝음";
+      cameraRAF=requestAnimationFrame(loop);
+    };loop();
+  }catch(e){toast("카메라 권한 또는 HTTPS 연결을 확인하세요.");}
+}
+function saveLightReading(){
+  if(!activeStream){toast("광센서를 먼저 시작하세요.");return}
+  state.light.push(lightLatest);saveState();renderLightReadings();
+}
+function clearLightReadings(){state.light=[];saveState();renderLightReadings()}
+function renderLightReadings(){
+  const w=document.getElementById("lightReadings");w.innerHTML="";
+  state.light.forEach((v,i)=>{const d=document.createElement("div");d.className="reading";d.innerHTML=`<div class="muted">측정 ${i+1}</div><div class="v">${v}</div>`;w.appendChild(d)});
+  document.getElementById("lightCount").textContent=state.light.length;
+}
+function submitQ2(){
+  if(state.light.length<2){toast("서로 다른 위치에서 2회 이상 측정하세요.");return}
+  const v=state.choice.q2;if(!v){toast("장소를 선택하세요.");return}
+  if(v===settings.q2)completeQuest(2,"EVIDENCE #02 확보");
+  else toast("밝기 패턴을 다시 비교해 보세요.");
+}
+
+async function startPPGCamera(){
+  try{
+    const v=await getRearCamera("ppgVideo",true);
+    ppgSamples=[];ppgPeaks=[];ppgLastPeak=0;ppgBpm=0;ppgRunning=true;
+    const off=document.createElement("canvas"), ctx=document.getElementById("ppgCanvas").getContext("2d");
+    function loop(ts){
+      if(!ppgRunning)return;
+      if(v.videoWidth){
+        const m=sampleFrame(v,off);
+        const value=m.r*.7+m.g*.3;
+        ppgSamples.push({t:performance.now(),v:value});
+        const cutoff=performance.now()-12000;
+        while(ppgSamples.length&&ppgSamples[0].t<cutoff)ppgSamples.shift();
+        estimatePPG();
+        drawPPG(ctx);
+      }
+      ppgRAF=requestAnimationFrame(loop);
+    }loop();
+  }catch(e){toast("카메라 권한 또는 HTTPS 연결을 확인하세요.");}
+}
+function estimatePPG(){
+  if(ppgSamples.length<20)return;
+  const vals=ppgSamples.map(x=>x.v);
+  const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+  const variance=vals.reduce((a,b)=>a+(b-mean)*(b-mean),0)/vals.length;
+  const sd=Math.sqrt(variance);
+  document.getElementById("quality").textContent=sd>4?"좋음":sd>1.8?"보통":"낮음";
+  const n=ppgSamples.length;
+  if(n<3)return;
+  const a=ppgSamples[n-3],b=ppgSamples[n-2],c=ppgSamples[n-1];
+  const now=b.t;
+  const threshold=mean+sd*.2;
+  if(b.v>a.v&&b.v>c.v&&b.v>threshold&&(now-ppgLastPeak)>380){
+    ppgPeaks.push(now);ppgLastPeak=now;
+    const recent=ppgPeaks.filter(t=>t>now-10000);
+    if(recent.length>=3){
+      const ints=[];for(let i=1;i<recent.length;i++)ints.push(recent[i]-recent[i-1]);
+      ints.sort((x,y)=>x-y);const med=ints[Math.floor(ints.length/2)];
+      const bpm=60000/med;
+      if(bpm>=45&&bpm<=160)ppgBpm=Math.round(bpm);
+    }
+  }
+  document.getElementById("bpm").textContent=ppgBpm||"--";
+}
+function drawPPG(ctx){
+  const c=ctx.canvas,w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  if(ppgSamples.length<2)return;
+  const vals=ppgSamples.map(x=>x.v),min=Math.min(...vals),max=Math.max(...vals),span=Math.max(1,max-min);
+  ctx.beginPath();ctx.strokeStyle="#47d7ff";ctx.lineWidth=2;
+  ppgSamples.forEach((p,i)=>{
+    const x=i/(ppgSamples.length-1)*w,y=h-(p.v-min)/span*(h-16)-8;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)
+  });ctx.stroke();
+}
+const stimuli=["현미경","우산","라텍스 장갑","사과","USB","비커"];
+async function runStimulusTest(){
+  if(!activeStream){toast("생체신호 카메라를 먼저 시작하세요.");return}
+  const btn=document.getElementById("ppgStartBtn");btn.disabled=true;
+  stimulusResults={};
+  document.getElementById("ppgPhase").textContent="기준";
+  document.getElementById("stimulus").textContent="안정 상태 측정";
+  await wait(8000);
+  const baseline=ppgBpm||72;
+  document.getElementById("stimTimeline").innerHTML=stimuli.map((s,i)=>`<div class="pill" id="pill${i}">${s}</div>`).join("");
+  for(let i=0;i<stimuli.length;i++){
+    document.querySelectorAll(".pill").forEach(x=>x.classList.remove("on"));
+    document.getElementById("pill"+i).classList.add("on");
+    document.getElementById("ppgPhase").textContent=(i+1)+"/"+stimuli.length;
+    document.getElementById("stimulus").textContent=stimuli[i];
+    const arr=[];
+    const start=Date.now();
+    while(Date.now()-start<4500){if(ppgBpm)arr.push(ppgBpm);await wait(300)}
+    const avg=arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):baseline;
+    stimulusResults[stimuli[i]]={avg,delta:Math.abs(avg-baseline)};
+    await wait(500);
+  }
+  document.getElementById("stimulus").textContent="분석 완료";
+  document.getElementById("ppgPhase").textContent="완료";
+  btn.disabled=false;
+  state.q3done=true;saveState();
+  const best=Object.entries(stimulusResults).sort((a,b)=>b[1].delta-a[1].delta)[0];
+  toast(`가장 큰 변화: ${best?.[0]||"측정완료"}`);
+  setTimeout(()=>completeQuest(3,"EVIDENCE #03 확보 · 생리적 반응 변화 기록"),1000);
+}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function completeQ3Fallback(){
+  if(!confirm("카메라/기기 호환 문제로 실측을 건너뛰고 활동 완료 처리할까요?"))return;
+  completeQuest(3,"EVIDENCE #03 확보 · 측정 원리 학습 완료");
+}
+
+const suspectBands={
+  1:[1,4,6,8,9],2:[2,4,6,7,9],3:[2,3,5,7,8],
+  4:[1,2,5,6,9],5:[2,4,5,7,8],6:[1,3,6,7,9]
+};
+function laneHTML(name,bands){
+  const bs=bands.map(n=>`<div class="band" style="top:${12+n*17}px"></div>`).join("");
+  return `<div><div class="lane">${bs}<div class="lab">${name}</div></div></div>`;
+}
+function renderGel(){
+  const gel=document.getElementById("gel");
+  gel.innerHTML=laneHTML("현장",[2,4,6,7,9])+laneHTML("용의자 1",suspectBands[1])+laneHTML("용의자 2",suspectBands[2]);
+  const s=document.getElementById("suspects");s.innerHTML="";
+  for(let i=1;i<=6;i++){
+    const b=document.createElement("button");b.className="suspect";b.textContent=`용의자 ${i}`;
+    b.onclick=()=>{state.choice.q4=String(i);saveState();s.querySelectorAll(".suspect").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")};
+    s.appendChild(b);
+  }
+}
+function submitQ4(){
+  const v=state.choice.q4;if(!v){toast("용의자를 선택하세요.");return}
+  if(v===String(settings.q4))completeQuest(4,"DNA MATCH · 결정적 증거 확보");
+  else toast("밴드의 위치를 다시 비교해 보세요.");
+}
+function renderQ5(){
+  const pending=document.getElementById("w3wPending"), box=document.getElementById("w3wBox");
+  if(settings.w3w&&settings.w3w.trim()){
+    pending.classList.add("hide");box.classList.remove("hide");box.textContent=settings.w3w.trim();
+  }else{pending.classList.remove("hide");box.classList.add("hide")}
+}
+function showFinal(){
+  show("final");document.getElementById("finalTeam").textContent=state.team||"";
+  const st=state.startedAt||Date.now(), diff=Math.max(0,Date.now()-st);
+  const sec=Math.floor(diff/1000),h=String(Math.floor(sec/3600)).padStart(2,"0"),m=String(Math.floor(sec%3600/60)).padStart(2,"0"),s=String(sec%60).padStart(2,"0");
+  document.getElementById("elapsed").textContent=`${h}:${m}:${s}`;
+}
+
+function openTeacher(){
+  document.getElementById("teacherModal").classList.add("on");
+  document.getElementById("teacherLogin").classList.remove("hide");
+  document.getElementById("teacherPanel").classList.add("hide");
+}
+function closeTeacher(){document.getElementById("teacherModal").classList.remove("on")}
+function teacherLogin(){
+  if(document.getElementById("teacherPin").value!==settings.pin){toast("PIN이 올바르지 않습니다.");return}
+  document.getElementById("teacherLogin").classList.add("hide");
+  document.getElementById("teacherPanel").classList.remove("hide");
+  document.getElementById("setQ1").value=settings.q1;
+  document.getElementById("setQ2").value=settings.q2;
+  document.getElementById("setQ4").value=String(settings.q4);
+  document.getElementById("setW3W").value=settings.w3w||"";
+  document.getElementById("finalUrl").value=location.origin+location.pathname+"?final=1";
+}
+function saveTeacher(){
+  settings.q1=document.getElementById("setQ1").value;
+  settings.q2=document.getElementById("setQ2").value;
+  settings.q4=document.getElementById("setQ4").value;
+  settings.w3w=document.getElementById("setW3W").value.trim();
+  localStorage.setItem("case017_settings",JSON.stringify(settings));toast("교사용 설정 저장 완료");renderQ5();
+}
+function resetProgress(){
+  if(!confirm("현재 기기의 수사 진행 기록을 모두 초기화할까요?"))return;
+  state={agent:"",team:"A",teamSize:4,startedAt:null,completed:[],choice:{},light:[],q3done:false};saveState();location.href=location.pathname;
+}
+
+
+let secretWord="";let q4TrapOK=false;let q5HintIndex=0;let q5HintTimer=null;
+const q5HintTexts=[
+  "이 세 단어를 하나의 문장으로 해석하려고 하지 마십시오.",
+  "이 정보는 암호문도 비밀번호도 아닙니다. 특정한 위치를 나타냅니다.",
+  "전 세계의 위치를 세 개의 단어로 표현하는 시스템이 있습니다.",
+  "그 시스템의 이름은 what3words, 줄여서 w3w입니다.",
+  "스마트폰에서 what3words를 검색하고 세 단어를 입력하십시오.",
+  "세 단어는 단어.단어.단어 형식으로 입력합니다."
+];
+function revealSecretWord(){
+  const words=["현미경","USB","비커","보라색 라텍스 장갑","복사기","유리병","피펫","노트북"];
+  secretWord=words[Math.floor(Math.random()*words.length)];
+  const b=document.getElementById("secretWordBox");b.classList.remove("hide");b.innerHTML=`<div class="kicker">피실험자만 확인</div><div style="font-size:26px;text-align:center;color:var(--accent2)">${secretWord}</div><p class="muted">5초 뒤 자동으로 사라집니다. 다른 팀원에게 말하지 마십시오.</p>`;
+  setTimeout(()=>{b.innerHTML="비밀 정보가 삭제되었습니다. 다른 요원들도 다시 화면을 보십시오.";setTimeout(()=>b.classList.add("hide"),1800)},5000);
+}
+function q4Principle(ok,el){
+  el.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');
+  if(!ok){toast('DNA 조각 길이와 이동거리의 관계를 다시 생각하세요.');return}
+  document.getElementById('q4Decode').classList.remove('hide');toast('PRINCIPLE CONFIRMED');
+}
+function decodeSceneSTR(){
+  const v=document.getElementById('sceneSTR').value.replace(/\s/g,'').replace(/·/g,',');
+  if(v!=='2,4,6,7,9'){toast('기준표를 이용해 다시 해독하세요.');return}
+  const d=document.getElementById('q4Assignments');d.classList.remove('hide');
+  const n=state.teamSize||4;
+  let text='';
+  if(n===4) text='요원 A: #1·#2 / 요원 B: #3 / 요원 C: #4·#5 / 요원 D: #6 + 현장 DNA';
+  if(n===3) text='요원 A: #1·#2 / 요원 B: #3·#4 / 요원 C: #5·#6 + 현장 DNA';
+  if(n===2) text='요원 A: #1·#2·#3 / 요원 B: #4·#5·#6 + 현장 DNA';
+  d.innerHTML=`<div class="sep"></div><h3>STEP 3 · 팀별 DNA 파일 배부</h3><div class="notice">${text}</div><p class="muted">각 요원은 자신의 자료를 해독한 뒤 팀원에게 결과를 공유하십시오.</p>`;
+  toast('CRIME SCENE DNA DECODED');
+}
+function q4Trap(ok,el){
+  el.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');
+  q4TrapOK=ok;if(ok)toast('CHECKPOINT 통과');else toast('4/5 일치는 완전 일치가 아닙니다.');
+}
+const oldSubmitQ4=submitQ4;
+submitQ4=function(){if(!q4TrapOK){toast('CHECKPOINT 문제를 먼저 해결하세요.');return}oldSubmitQ4();}
+const oldRunStimulus=runStimulusTest;
+runStimulusTest=async function(){await oldRunStimulus();document.getElementById('q3CaseData')?.classList.remove('hide');}
+const oldRenderQ5=renderQ5;
+renderQ5=function(){oldRenderQ5();q5HintIndex=0;renderQ5Hints();clearInterval(q5HintTimer);q5HintTimer=setInterval(()=>{if(q5HintIndex<6){q5HintIndex++;renderQ5Hints()}},180000);}
+function renderQ5Hints(){
+  const w=document.getElementById('q5Hints');if(!w)return;w.innerHTML='';
+  q5HintTexts.forEach((h,i)=>{const open=i<q5HintIndex;w.innerHTML+=`<div class="hint ${open?'':'lock'}"><div class="kicker">HINT ${String(i+1).padStart(2,'0')}</div>${open?h:'3분 후 자동 해금'}</div>`});
+}
+function revealNextHint(){if(q5HintIndex<6){q5HintIndex++;renderQ5Hints()}else toast('모든 힌트가 공개되었습니다.');}
+
+(function init(){
+  const p=new URLSearchParams(location.search);
+  if(p.get("final")==="1"){showFinal();return}
+  if(state.agent){
+    document.getElementById("agentName").value=state.agent;
+    document.getElementById("team").value=state.team; if(document.getElementById("teamSize")) document.getElementById("teamSize").value=String(state.teamSize||4);
+  }
+  renderLightReadings();
+})();
+</script>
+</body>
+</html>
