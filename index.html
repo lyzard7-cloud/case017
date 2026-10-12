@@ -22,7 +22,21 @@
 <p class="muted">임무 내용을 모두 확인했다면 사건 기록을 열어 수사를 시작하십시오.</p>
 <button class="btn primary" onclick="startBriefing()">사건 기록 열기</button>
 </div></section><section id="brief" class="scr"><div class="card"><div class="k">CASE BRIEFING</div><div id="briefBody" class="stim briefDense"></div><p id="briefCount" class="muted center"></p><button class="btn primary" onclick="briefNext()">다음</button></div></section>
-<section id="sus" class="scr"><div class="card"><div class="k">SUSPECT FILES</div><div id="susBody"></div><div class="grid2"><button class="btn ghost" onclick="susMove(-1)">← 이전</button><button class="btn primary" onclick="susMove(1)">다음 →</button></div></div></section>
+<section id="susIntro" class="scr"><div class="card">
+<div class="k">SUSPECT INVESTIGATION</div>
+<h2>용의자로 지목된 인물들의 수사 자료</h2>
+<p>현재 연구센터 내부 관계자 6명이 용의선상에 올라 있습니다.</p>
+<div class="notice">
+지금부터 각 인물의 역할, 사건 당시 위치, 피해자와의 관계, 접근 가능 정보와 수사 메모를 확인합니다.
+</div>
+<p>중요한 점은 <b>수상해 보이는 사람을 먼저 고르는 것</b>이 아닙니다.</p>
+<p>각 용의자의 진술과 행동 가능성을 기억해 두었다가, 이후 퀘스트에서 확보되는 과학적 증거와 비교하십시오.</p>
+<div class="notice warn">
+기회가 있었다는 것과 실제로 범행을 저질렀다는 것은 다릅니다.
+</div>
+<p class="muted">자료를 모두 확인한 뒤에도 아직 범인을 단정하지 마십시오.</p>
+<button class="btn primary" onclick="openSuspectFiles()">용의자 수사 자료 열어보기</button>
+</div></section><section id="sus" class="scr"><div class="card"><div class="k">SUSPECT FILES</div><div id="susBody"></div><div class="grid2"><button class="btn ghost" onclick="susMove(-1)">← 이전</button><button class="btn primary" onclick="susMove(1)">다음 →</button></div></div></section>
 <section id="dash" class="scr"><div class="card"><div class="k">FIELD DASHBOARD</div><h2><span id="teamTxt"></span> 수사팀</h2><p id="prog" class="muted"></p></div><div id="qlist"></div><div class="card"><button id="finalBtn" class="btn primary" onclick="finalAnalysis()" disabled>FINAL ANALYSIS</button></div></section>
 <section id="quest" class="scr"><div class="card"><div id="stepbar" class="steps"></div><div id="qbody"></div><div class="grid2"><button id="back" class="btn ghost" onclick="step(-1)">← 이전</button><button id="next" class="btn primary" onclick="step(1)">다음 →</button></div></div></section>
 <section id="analysis" class="scr"><div class="card center"><div class="k">FINAL ANALYSIS</div><div id="analysisText" class="stim"></div></div></section>
@@ -60,7 +74,25 @@ function renderBrief(){
   briefBody.innerHTML=BL[S.brief].replaceAll("\n","<br>");
   briefCount.textContent=`${S.brief+1} / ${BL.length}`;
 }
-function briefNext(){if(S.brief<BL.length-1){S.brief++;save();renderBrief()}else{S.sus=0;save();renderSus();sh("sus")}}
+function briefNext(){
+  if(S.brief<BL.length-1){
+    S.brief++;
+    save();
+    renderBrief();
+  }else{
+    S.sus=0;
+    S.susIntroSeen=false;
+    save();
+    sh("susIntro");
+  }
+}
+function openSuspectFiles(){
+  S.susIntroSeen=true;
+  S.sus=0;
+  save();
+  renderSus();
+  sh("sus");
+}
 function renderSus(){let x=SU[S.sus];susBody.innerHTML=`<div class="k">SUSPECT #0${S.sus+1}</div><h2>${x[0]}</h2><p class="muted">${x[1]}</p><h3>사건 당시 위치</h3><p>${x[2]}</p><h3>접근 가능 정보</h3><p>${x[3]}</p><h3>수사 메모</h3><p>${x[4]}</p><p class="muted center">${S.sus+1}/6</p>`}
 function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S.sus<5){S.sus++;save();renderSus();return}if(d>0&&S.sus===5)dash()}
 function dash(){S.q=null;S.st=0;save();teamTxt.textContent=S.team;prog.textContent=`${S.agent} · ${S.done.length}/4 완료`;let cur=O[S.team].find(x=>!S.done.includes(x));qlist.innerHTML="";O[S.team].forEach(q=>{let done=S.done.includes(q),open=q===cur,e=document.createElement("div");e.className="quest "+(done?"done":open?"":"lock");e.innerHTML=`<div class="num">Q${q}</div><div><div>${QT[q][0]}</div><div class="muted">${QT[q][1]}</div></div>`;if(done||open)e.onclick=()=>openQ(q);qlist.appendChild(e)});finalBtn.disabled=S.done.length<4;sh("dash")}
@@ -200,7 +232,17 @@ let hint=0,hit=null;const HT=["세 단어를 문장으로 해석하지 마십시
 function openQ5(){S.q=5;S.st=0;save();w3w.textContent=T.w3w||"좌표 미등록";renderHints();sh("q5");clearInterval(hit);hit=setInterval(()=>{if(hint<6){hint++;S.hint=hint;save();renderHints()}},180000)}
 function renderHints(){hint=S.hint||0;hints.innerHTML=HT.map((x,i)=>`<div class="hint ${i<hint?"":"lock"}"><div class="k">HINT ${i+1}</div>${i<hint?x:"3분 후 자동 해금"}</div>`).join("")}
 function field(){clearInterval(hit);S.q=5;S.st=99;save();sh("field")}
-function resume(){if(S.pendingApproval){S.q=S.pendingApproval;sh("quest");showApprovalWait(S.pendingApproval);return}if(S.q===5&&S.st===99)return sh("field");if(S.q===5)return openQ5();if(S.q){renderQ();return sh("quest")}if(S.done.length)return dash();if(S.sus){renderSus();return sh("sus")}if(S.missionSeen){renderBrief();return sh("brief")}sh("mission")}
+function resume(){
+  if(S.pendingApproval){S.q=S.pendingApproval;sh("quest");showApprovalWait(S.pendingApproval);return}
+  if(S.q===5&&S.st===99)return sh("field");
+  if(S.q===5)return openQ5();
+  if(S.q){renderQ();return sh("quest")}
+  if(S.done.length)return dash();
+  if(S.susIntroSeen){renderSus();return sh("sus")}
+  if(S.missionSeen && S.brief>=BL.length-1){return sh("susIntro")}
+  if(S.missionSeen){renderBrief();return sh("brief")}
+  sh("mission")
+}
 let resetRequested=false;let approvalRequested=false;
 function teacher(reset){
   resetRequested=!!reset;
