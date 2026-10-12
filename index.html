@@ -1,7 +1,7 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CASE 017 v3</title>
 <style>
 :root{--bg:#071019;--p:#0d1721;--l:#223744;--t:#eef6fa;--m:#91a6b1;--a:#41d9ff;--ok:#78e2a7;--w:#ffd66b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.app{max-width:540px;margin:auto;padding:12px 14px 30px}.top{display:flex;justify-content:space-between;color:var(--a);font-size:12px;letter-spacing:.08em;padding:8px 2px}.scr{display:none}.scr.on{display:block}.card{background:linear-gradient(180deg,var(--p),#09131c);border:1px solid var(--l);border-radius:20px;padding:20px;margin:12px 0}.k{font-size:11px;letter-spacing:.13em;color:var(--a);margin-bottom:8px}h1{font-size:29px;margin:0 0 10px}h2{font-size:21px;margin:0 0 12px}h3{font-size:16px}p{line-height:1.65;color:#d7e3e8}.muted{color:var(--m);font-size:13px}.notice{border-left:3px solid var(--a);background:#0a1720;border-radius:10px;padding:11px 12px;font-size:13px;line-height:1.6;margin:12px 0}.warn{border-left-color:var(--w)}.ok{border-left-color:var(--ok)}button,input,select{font:inherit}.btn{width:100%;min-height:52px;border:1px solid var(--l);border-radius:14px;background:#112432;color:var(--t);padding:11px;margin-top:9px}.primary{background:#0c789b;border-color:#2ab8e0}.ghost{background:transparent}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{margin:12px 0}label{display:block;color:var(--m);font-size:12px;margin-bottom:6px}input,select{width:100%;min-height:48px;border:1px solid var(--l);border-radius:12px;background:#09141d;color:var(--t);padding:0 12px}.steps{display:flex;gap:6px;overflow:auto;margin-bottom:14px}.dot{min-width:27px;height:27px;border:1px solid var(--l);border-radius:99px;display:grid;place-items:center;font-size:11px;color:var(--m)}.dot.now{color:var(--a);border-color:#2a7890}.dot.done{color:var(--ok);border-color:#2a5940}.quest{display:flex;gap:11px;border:1px solid var(--l);border-radius:16px;padding:13px;margin:9px 0}.quest.lock{opacity:.4}.quest.done{border-color:#28563e}.num{width:40px;height:40px;border-radius:11px;background:#102b3a;color:var(--a);display:grid;place-items:center}.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}.opt,.choice button{min-height:52px;border:1px solid var(--l);border-radius:13px;background:#0b1821;color:var(--t);padding:10px}.sel{border-color:var(--a)!important;background:#0d2a36!important}.camera{position:relative;aspect-ratio:4/5;background:#000;border:1px solid var(--l);border-radius:16px;overflow:hidden;margin:12px 0}video{width:100%;height:100%;object-fit:cover}.ret{position:absolute;left:50%;top:50%;width:40%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid #fff9;border-radius:15px;box-shadow:0 0 0 999px #0003}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.metric{border:1px solid var(--l);border-radius:12px;padding:9px 5px;text-align:center;background:#08131b}.metric b{display:block;font-size:18px}.metric span{font-size:9px;color:var(--m)}.stim{min-height:170px;display:grid;place-items:center;text-align:center;border:1px solid #285063;border-radius:17px;background:#0a1822;font-size:28px;padding:18px}.briefDense{min-height:230px;font-size:18px;line-height:1.8;text-align:left;place-items:start;padding:20px}.timer{text-align:center;font-size:54px;color:var(--w)}.matrix{overflow:auto;border:1px solid var(--l);border-radius:13px}table{border-collapse:collapse;width:100%;min-width:470px}th,td{padding:9px;border-bottom:1px solid #1b2f3a;text-align:center;font-size:12px}th{background:#0b1821}.code{font-family:monospace;font-size:21px;letter-spacing:.05em;text-align:center;border:1px dashed #35627a;border-radius:14px;padding:17px}.hint{border:1px solid var(--l);border-radius:13px;padding:12px;margin:9px 0}.hint.lock{opacity:.35}.hide{display:none!important}.center{text-align:center}.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#10232e;border:1px solid #2c586d;padding:10px 14px;border-radius:99px;opacity:0;transition:.2s;z-index:99;max-width:88%;text-align:center}.toast.on{opacity:1}.hot{position:fixed;right:0;bottom:0;width:34px;height:34px;opacity:.01}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:100}.modal.on{display:flex}.sheet{width:min(540px,100%);max-height:92vh;overflow:auto;background:#0b151e;border:1px solid var(--l);border-radius:22px 22px 0 0;padding:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.app{max-width:540px;margin:auto;padding:12px 14px 30px}.top{display:flex;justify-content:space-between;color:var(--a);font-size:12px;letter-spacing:.08em;padding:8px 2px}.scr{display:none}.scr.on{display:block}.card{background:linear-gradient(180deg,var(--p),#09131c);border:1px solid var(--l);border-radius:20px;padding:20px;margin:12px 0}.k{font-size:11px;letter-spacing:.13em;color:var(--a);margin-bottom:8px}h1{font-size:29px;margin:0 0 10px}h2{font-size:21px;margin:0 0 12px}h3{font-size:16px}p{line-height:1.65;color:#d7e3e8}.muted{color:var(--m);font-size:13px}.notice{border-left:3px solid var(--a);background:#0a1720;border-radius:10px;padding:11px 12px;font-size:13px;line-height:1.6;margin:12px 0}.warn{border-left-color:var(--w)}.ok{border-left-color:var(--ok)}button,input,select{font:inherit}.btn{width:100%;min-height:52px;border:1px solid var(--l);border-radius:14px;background:#112432;color:var(--t);padding:11px;margin-top:9px}.primary{background:#0c789b;border-color:#2ab8e0}.ghost{background:transparent}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{margin:12px 0}label{display:block;color:var(--m);font-size:12px;margin-bottom:6px}input,select,textarea{width:100%;min-height:48px;border:1px solid var(--l);border-radius:12px;background:#09141d;color:var(--t);padding:0 12px}textarea{min-height:150px;padding:12px;resize:vertical;line-height:1.6}.steps{display:flex;gap:6px;overflow:auto;margin-bottom:14px}.dot{min-width:27px;height:27px;border:1px solid var(--l);border-radius:99px;display:grid;place-items:center;font-size:11px;color:var(--m)}.dot.now{color:var(--a);border-color:#2a7890}.dot.done{color:var(--ok);border-color:#2a5940}.quest{display:flex;gap:11px;border:1px solid var(--l);border-radius:16px;padding:13px;margin:9px 0}.quest.lock{opacity:.4}.quest.done{border-color:#28563e}.num{width:40px;height:40px;border-radius:11px;background:#102b3a;color:var(--a);display:grid;place-items:center}.choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}.opt,.choice button{min-height:52px;border:1px solid var(--l);border-radius:13px;background:#0b1821;color:var(--t);padding:10px}.sel{border-color:var(--a)!important;background:#0d2a36!important}.camera{position:relative;aspect-ratio:4/5;background:#000;border:1px solid var(--l);border-radius:16px;overflow:hidden;margin:12px 0}video{width:100%;height:100%;object-fit:cover}.ret{position:absolute;left:50%;top:50%;width:40%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid #fff9;border-radius:15px;box-shadow:0 0 0 999px #0003}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.metric{border:1px solid var(--l);border-radius:12px;padding:9px 5px;text-align:center;background:#08131b}.metric b{display:block;font-size:18px}.metric span{font-size:9px;color:var(--m)}.stim{min-height:170px;display:grid;place-items:center;text-align:center;border:1px solid #285063;border-radius:17px;background:#0a1822;font-size:28px;padding:18px}.briefDense{min-height:230px;font-size:18px;line-height:1.8;text-align:left;place-items:start;padding:20px}.timer{text-align:center;font-size:54px;color:var(--w)}.matrix{overflow:auto;border:1px solid var(--l);border-radius:13px}table{border-collapse:collapse;width:100%;min-width:470px}th,td{padding:9px;border-bottom:1px solid #1b2f3a;text-align:center;font-size:12px}th{background:#0b1821}.code{font-family:monospace;font-size:21px;letter-spacing:.05em;text-align:center;border:1px dashed #35627a;border-radius:14px;padding:17px}.hint{border:1px solid var(--l);border-radius:13px;padding:12px;margin:9px 0}.hint.lock{opacity:.35}.hide{display:none!important}.center{text-align:center}.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#10232e;border:1px solid #2c586d;padding:10px 14px;border-radius:99px;opacity:0;transition:.2s;z-index:99;max-width:88%;text-align:center}.toast.on{opacity:1}.hot{position:fixed;right:0;bottom:0;width:34px;height:34px;opacity:.01}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;justify-content:center;z-index:100}.modal.on{display:flex}.sheet{width:min(540px,100%);max-height:92vh;overflow:auto;background:#0b151e;border:1px solid var(--l);border-radius:22px 22px 0 0;padding:18px}
 </style></head><body><div class="app"><div class="top"><span>강일 심화과학반 특별수사팀</span><span>CASE 017 · v3</span></div>
 <section id="start" class="scr on"><div class="card"><div class="k">MOBILE FORENSIC LAB</div><h1>CASE 017</h1><p>과학적 증거를 수집하고 분석하여 사건의 진실을 밝혀내십시오.</p><div id="recover" class="notice hide"><div class="k">INVESTIGATION RECORD FOUND</div><p id="recoverText"></p><button class="btn primary" onclick="resume()">이어서 수사하기</button><button class="btn ghost" onclick="teacher(true)">처음부터 다시 시작</button></div><div id="newForm"><div class="field"><label>요원 이름</label><input id="name"></div><div class="grid2"><div class="field"><label>수사팀</label><select id="team"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>팀 인원</label><select id="size"><option>4</option><option>3</option><option>2</option></select></div></div><button class="btn primary" onclick="begin()">특별수사 임무 시작</button></div></div></section>
 <section id="mission" class="scr"><div class="card">
@@ -32,7 +32,7 @@
 </div><div class="hot" onclick="teacher(false)"></div><div id="modal" class="modal"><div class="sheet"><div class="k">TEACHER CONTROL</div><h2>교사용 설정</h2><div id="teacherLoginBox"><div class="field"><label>PIN</label><input id="pin" type="password"></div><button class="btn primary" onclick="teacherLoginFn()">열기</button><button class="btn ghost" onclick="closeT()">닫기</button></div><div id="panel" class="hide"><div class="field"><label>Q1 비타민 C 정답</label><select id="tq1"><option>A</option><option>B</option></select></div><div class="field"><label>Q2 사건 기준 밝기</label><input id="tl"></div><div class="field"><label>Q2 정답 장소</label><select id="tq2"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>장소 A~D 이름 (쉼표 구분)</label><input id="tpl"></div><div class="field"><label>w3w</label><input id="tw"></div><div class="field"><label>NFC URL</label><input id="nfc" readonly></div><button class="btn primary" onclick="saveT()">저장</button><button class="btn ghost" onclick="resetAll()">진행기록 초기화</button></div></div></div><div id="toast" class="toast"></div>
 <script>
 const D={pin:"017",q1:"A",q2:"C",light:"38",places:["장소 A","장소 B","장소 C","장소 D"],w3w:""};
-let S=JSON.parse(localStorage.getItem("c17v3")||"null")||{agent:"",team:"A",size:4,start:0,brief:0,sus:0,done:[],q:null,st:0,a:{},q1:{},q2:{p:{}},q3:{},q4:{}};
+let S=JSON.parse(localStorage.getItem("c17v3")||"null")||{agent:"",team:"A",size:4,start:0,brief:0,sus:0,done:[],q:null,st:0,a:{},q1:{},q2:{p:{}},q3:{},q4:{},written:{},pendingApproval:null};if(!S.written)S.written={};if(S.pendingApproval===undefined)S.pendingApproval=null;
 let T=JSON.parse(localStorage.getItem("c17setv3")||"null")||D;
 const O={A:[1,2,3,4],B:[2,3,4,1],C:[3,4,1,2],D:[4,1,2,3]};
 const QT={1:["바꿔치기된 비타민 병","화학·RGB"],2:["어두운 복도의 진술","빛·상대 밝기"],3:["범인은 이 단어를 알고 있다","PPG 생체신호"],4:["피해자의 손톱 아래 흔적","DNA·STR"]};
@@ -63,8 +63,13 @@ function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S
 function dash(){S.q=null;S.st=0;save();teamTxt.textContent=S.team;prog.textContent=`${S.agent} · ${S.done.length}/4 완료`;let cur=O[S.team].find(x=>!S.done.includes(x));qlist.innerHTML="";O[S.team].forEach(q=>{let done=S.done.includes(q),open=q===cur,e=document.createElement("div");e.className="quest "+(done?"done":open?"":"lock");e.innerHTML=`<div class="num">Q${q}</div><div><div>${QT[q][0]}</div><div class="muted">${QT[q][1]}</div></div>`;if(done||open)e.onclick=()=>openQ(q);qlist.appendChild(e)});finalBtn.disabled=S.done.length<4;sh("dash")}
 function openQ(q){S.q=q;S.st=0;save();renderQ();sh("quest")}
 function nsteps(q){return {1:10,2:10,3:8,4:9}[q]}
-function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.disabled=S.st===0;next.textContent=S.st===nsteps(S.q)-1?"증거 저장":"다음 →"}
-function step(d){if(d<0){S.st=Math.max(0,S.st-1);save();renderQ();return}if(!valid())return;if(S.st<nsteps(S.q)-1){S.st++;save();renderQ();scrollTo(0,0)}else{if(!S.done.includes(S.q))S.done.push(S.q);save();toast(`EVIDENCE #0${S.q} 확보`);setTimeout(dash,600)}}
+function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.disabled=S.st===0;next.textContent=S.st===nsteps(S.q)-1?"서술형 답안 제출":"다음 →"}
+function step(d){
+if(d<0){S.st=Math.max(0,S.st-1);save();renderQ();return}
+if(!valid())return;
+if(S.st<nsteps(S.q)-1){S.st++;save();renderQ();scrollTo(0,0)}
+else{submitWrittenAnswer(S.q)}
+}
 function setSel(el,key,val){S.a[key]=val;save();el.parentElement.querySelectorAll("button").forEach(b=>b.classList.remove("sel"));el.classList.add("sel")}
 function opts(key,arr){return `<div class="choice">${arr.map((x,i)=>`<button onclick="setSel(this,'${key}','${i}')">${x}</button>`).join("")}</div>`}
 let stream=null,raf=null,RGB={r:0,g:0,b:0,l:0};
@@ -82,7 +87,7 @@ if(s===5)h+=`<h2>20초 관찰</h2><div id="tm" class="timer">20</div><button cla
 if(s===6)h+=`<h2>아이오딘 반응 육안 분석</h2><p>20초간의 반응이 끝났습니다. 이제 두 시료를 흰색 배경 위에 나란히 놓고 직접 비교하십시오.</p><div class="notice">비타민 C는 아이오딘을 환원시키므로, 비타민 C가 포함된 시료에서는 아이오딘 특유의 갈색 계열 색이 더 빠르게 옅어질 수 있습니다.</div><p>다음 두 가지를 관찰하십시오.</p><p>① 아이오딘의 갈색 계열 색이 어느 시료에서 더 많이 사라졌는가?<br>② 어느 시료가 아이오딘 첨가 전의 노란색에 더 가까워졌는가?</p>${opts("q1obs",["시료 A에서 더 많이 옅어졌다","시료 B에서 더 많이 옅어졌다","육안으로 구분하기 어렵다"])}<button class="btn" onclick="S.q1.obs=S.a.q1obs;save();toast('육안 관찰 결과 저장')">육안 관찰 결과 저장</button><div class="notice">사람의 눈으로 판단한 색은 주관적일 수 있습니다. 다음 단계에서는 스마트폰 카메라를 이용해 반응 후 색을 수치로 분석합니다.</div>`;
 if(s===7)h+=`<h2>반응 후 RGB 측정</h2><button class="btn" onclick="cam('cam')">카메라 분석 시작</button>${cm()}<div class="grid2"><button class="btn" onclick="rgbSave('postA')">A 저장</button><button class="btn" onclick="rgbSave('postB')">B 저장</button></div><p class="muted">A ${fr(S.q1.postA)} / B ${fr(S.q1.postB)}</p>`;
 if(s===8)h+=`<h2>RGB 결과 해석</h2><p>앞 단계에서 시료 A와 B의 색을 아이오딘 반응 전과 후에 각각 측정했습니다.</p><div class="notice">스마트폰 카메라는 색을 R(빨강), G(초록), B(파랑) 값으로 표현합니다. 반응 전·후 RGB값이 얼마나 달라졌는지를 비교하면 색 변화의 정도를 수치로 나타낼 수 있습니다.</div><p><b>ΔRGB</b>는 반응 전과 후의 RGB 변화량을 하나의 값으로 나타낸 것입니다.</p><p>ΔRGB가 크다 → 반응 전과 후의 색 차이가 큼<br>ΔRGB가 작다 → 반응 전과 후의 색 차이가 작음</p><div class="matrix"><table><tr><th>시료</th><th>반응 전 RGB</th><th>반응 후 RGB</th><th>ΔRGB</th></tr><tr><td>A</td><td>${fr(S.q1.preA)}</td><td>${fr(S.q1.postA)}</td><td>${delta(S.q1.preA,S.q1.postA)??"-"}</td></tr><tr><td>B</td><td>${fr(S.q1.preB)}</td><td>${fr(S.q1.postB)}</td><td>${delta(S.q1.preB,S.q1.postB)??"-"}</td></tr></table></div><p>비타민 C가 아이오딘을 환원시키면 아이오딘의 색이 약해져 원래 시료 색에 더 가까워질 수 있습니다. 반대로 아이오딘이 남아 있으면 갈색 계열의 색이 더 오래 유지되어 반응 전 색과 차이가 커질 수 있습니다.</p><div class="notice warn">단, RGB값만으로 물질을 정확히 식별할 수는 없습니다. 조명, 촬영 거리, 카메라 자동노출 등의 영향을 받기 때문에 육안 관찰 결과와 함께 해석해야 합니다.</div><p>이번 RGB 분석을 가장 올바르게 해석한 것은?</p>${opts("q1r",["R값이 가장 큰 시료가 비타민 C이다","ΔRGB가 가장 큰 시료가 반드시 비타민 C이다","육안으로 관찰한 아이오딘 색 변화와 RGB 전후 변화를 함께 비교해야 한다","RGB값만으로 시료 성분을 정확히 판별할 수 있다"])}<button class="btn" onclick="if(S.a.q1r==='2'){S.q1.reason=1;save();toast('COLOR ANALYSIS INTERPRETED')}else toast('RGB값 하나만으로 물질을 판별할 수 있는지 다시 생각하세요')">해석 확인</button>`;
-if(s===9)h+=`<h2>최종 판단</h2><p>실제 비타민 C 음료는?</p>${opts("q1f",["시료 A","시료 B"])}<div class="notice">다른 시료가 실제 독극물이라는 사실까지 확인한 것은 아닙니다.</div>`;
+if(s===9)h+=`<h2>최종 증거 판단</h2><p>육안 관찰 결과와 RGB 분석 결과를 근거로, 어느 시료가 실제 비타민 C 음료라고 판단하는지 서술하십시오.</p><div class="notice">반드시 <b>선택한 시료(A 또는 B)</b>와 <b>그렇게 판단한 과학적 근거</b>를 함께 작성하십시오.</div><textarea id="writtenQ1" placeholder="예: 시료 ___가 실제 비타민 C 음료라고 판단한다. 그 이유는 ...">${S.written[1]||""}</textarea><button class="btn" onclick="saveWritten(1,'writtenQ1')">답안 임시 저장</button><div class="notice warn">답안을 제출해도 다음 퀘스트는 자동으로 열리지 않습니다. 교사의 확인과 허용이 필요합니다.</div>`;
 qbody.innerHTML=h}
 function fr(x){return x?`${x.r},${x.g},${x.b}`:"미측정"}function rgbSave(k){if(!stream)return toast("카메라를 먼저 시작하세요.");S.q1[k]={...RGB};save();toast("저장 완료");renderQ()}function delta(a,b){return a&&b?Math.round(Math.hypot(a.r-b.r,a.g-b.g,a.b-b.b)):null}function count20(){let t=20,e=document.getElementById("tm"),iv=setInterval(()=>{e.textContent=--t;if(t<=0){clearInterval(iv);e.textContent="완료"}},1000)}
 function q2(){let s=S.st,h=`<div class="k">QUEST 2 · ${s+1}/10</div>`;
@@ -92,7 +97,7 @@ if(s===2)h+=`<h2>센서의 한계</h2><p>같은 장소에서 휴대폰마다 값
 if(s>=3&&s<=6){let k=["A","B","C","D"][s-3],i=s-3;h+=`<h2>LOCATION ${k}</h2><p>${T.places[i]}</p><button class="btn" onclick="cam('cam')">광센서 시작</button>${cm()}<div class="field"><label>표지판 식별</label><select id="vis"><option value="">선택</option><option>선명하게 읽음</option><option>일부 식별</option><option>식별 어려움</option></select></div><button class="btn primary" onclick="placeSave('${k}')">현재 장소 저장</button>`}
 if(s===7){let rows=["A","B","C","D"].map((k,i)=>{let p=S.q2.p[k]||{};return `<tr><td>${k}</td><td>${T.places[i]}</td><td>${p.l??"-"}</td><td>${p.l!=null?Math.abs(p.l-(+T.light)):"-"}</td><td>${p.v||"-"}</td></tr>`}).join("");h+=`<h2>데이터 비교</h2><div class="matrix"><table><tr><th>장소</th><th>이름</th><th>밝기</th><th>기준차</th><th>표지판</th></tr>${rows}</table></div><p>사건 기준에 가장 가까운 장소는?</p>${opts("q2match",["A","B","C","D"])}<button class="btn" onclick="S.q2.match=['A','B','C','D'][+S.a.q2match];save();toast('비교 저장')">선택 저장</button>`}
 if(s===8)h+=`<h2>증거의 한계</h2><p>비슷한 밝기에서 표지판이 보였다고 해서 거짓말을 확정할 수 있을까요?</p>${opts("q2lim",["반드시 거짓말이다","진술과 실험 결과가 일치하지 않는 정도만 말할 수 있다"])}<button class="btn" onclick="if(S.a.q2lim==='1'){S.q2.limit=1;save();toast('한계 확인')}else toast('단정 범위를 생각하세요')">확인</button>`;
-if(s===9)h+=`<h2>최종 판단</h2>${opts("q2f",["한도윤이 범인이다","한도윤은 확실히 거짓말했다","한도윤의 진술 일부가 실험 결과와 일치하지 않는다"])}<button class="btn" onclick="if(S.a.q2f==='2'){S.q2.final=1;save();toast('진술 불일치 확인')}else toast('다시 생각하세요')">판단 저장</button>`;
+if(s===9)h+=`<h2>최종 증거 판단</h2><p>장소 A~D의 밝기 측정 결과와 표지판 식별 결과를 근거로, 한도윤의 진술을 어떻게 평가할 수 있는지 서술하십시오.</p><div class="notice">“범인이다/거짓말이다”라고 단정하기보다, 이번 측정으로 <b>확인할 수 있는 범위</b>까지 작성하십시오.</div><textarea id="writtenQ2" placeholder="측정 결과를 종합하면 ...">${S.written[2]||""}</textarea><button class="btn" onclick="saveWritten(2,'writtenQ2')">답안 임시 저장</button><div class="notice warn">답안 제출 후 교사의 확인을 받아야 다음 퀘스트가 열립니다.</div>`;
 qbody.innerHTML=h}
 function placeSave(k){if(!stream)return toast("광센서를 먼저 시작하세요.");let v=document.getElementById("vis").value;if(!v)return toast("표지판 식별을 선택하세요.");S.q2.p[k]={l:RGB.l,v};save();toast("저장 완료")}
 function q3(){let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/8</div>`;
@@ -103,7 +108,7 @@ if(s===3)h+=`<h2>기준 신호</h2><p>손가락을 후면 카메라와 플래시
 if(s===4)h+=`<h2>자극 테스트</h2><p>다음에 나올 단어는 미리 공개되지 않습니다.</p><div id="stim" class="stim">준비</div><button class="btn primary" onclick="stimTest()">자극 테스트 시작</button><p class="muted">현재 단어 하나만 표시됩니다.</p>`;
 if(s===5)h+=`<h2>결과 분석</h2><div class="matrix"><table><tr><th>단어</th><th>반응 변화</th></tr>${(S.q3.res||[]).map(x=>`<tr><td>${x.w}</td><td>${x.s}</td></tr>`).join("")}</table></div><div class="notice">${S.q3.msg||""}</div><button class="btn" onclick="S.q3.review=1;save();toast('검토 완료')">결과 검토 완료</button>`;
 if(s===6)h+=`<h2>한도윤 생체신호 기록</h2><p>이제 실제 사건 기록을 분석합니다.</p><div class="matrix"><table><tr><th>단어</th><th>반응</th></tr><tr><td>현미경</td><td>+2.4%</td></tr><tr><td>USB</td><td>+1.9%</td></tr><tr><td>비커</td><td>+3.1%</td></tr><tr><td>보라색 라텍스 장갑</td><td>+12.4%</td></tr><tr><td>복사기</td><td>+2.7%</td></tr></table></div><p>보라색 라텍스 장갑은 외부에 공개되지 않은 현장 정보입니다.</p>`;
-if(s===7)h+=`<h2>가장 타당한 해석</h2>${opts("q3f",["한도윤이 범인이다","한도윤이 비공개 현장 정보를 알고 있었을 가능성이 있다"])}<button class="btn" onclick="if(S.a.q3f==='1'){S.q3.final=1;save();toast('증거 저장 준비')}else toast('단정 범위를 다시 생각하세요')">판단 저장</button>`;
+if(s===7)h+=`<h2>최종 증거 판단</h2><p>한도윤의 생체신호 기록에서 ‘보라색 라텍스 장갑’에 대한 반응이 크게 나타난 사실을 어떻게 해석할 수 있는지 서술하십시오.</p><div class="notice">생체신호만으로 범행이나 거짓말을 확정할 수 있는지도 함께 고려하십시오.</div><textarea id="writtenQ3" placeholder="이 결과는 한도윤이 ... 가능성을 보여주지만, ...">${S.written[3]||""}</textarea><button class="btn" onclick="saveWritten(3,'writtenQ3')">답안 임시 저장</button><div class="notice warn">교사가 답안을 확인하고 허용해야 다음 퀘스트로 진행할 수 있습니다.</div>`;
 qbody.innerHTML=h}
 function secret(){let W=["현미경","USB","비커","보라색 라텍스 장갑","복사기","유리병","피펫","노트북"];S.q3.secret=S.q3.secret||W[Math.floor(Math.random()*W.length)];save();secret.textContent=S.q3.secret;setTimeout(()=>secret.textContent="비밀 정보 삭제 완료",5000)}
 async function baseline(){try{await cam("none",true)}catch(e){}S.q3.base=1;save();let e=document.getElementById("bst");e.textContent="측정 중...";setTimeout(()=>{e.textContent="BASELINE COMPLETE";stopCam()},10000)}
@@ -118,22 +123,75 @@ if(s===4)h+=`<h2>팀 정보 공유</h2><p>각 요원이 해독한 STR 값을 서
 if(s===5)h+=`<h2>비교표 확인</h2><input id="cand" placeholder="5개 구간 모두 일치한 용의자 번호"><button class="btn" onclick="if(cand.value.trim()==='2'){S.q4.table=1;save();toast('비교표 완료')}else toast('모든 구간을 다시 비교하세요')">확인</button>`;
 if(s===6)h+=`<h2>4/5 함정</h2><p>용의자 #5는 5개 구간 중 4개가 일치합니다. 동일한 시료라고 판단해도 될까요?</p>${opts("q4trap",["그렇다","아니다"])}<button class="btn" onclick="if(S.a.q4trap==='1'){S.q4.trap=1;save();toast('CHECKPOINT 통과')}else toast('4/5는 완전 일치가 아닙니다')">확인</button>`;
 if(s===7)h+=`<h2>증거 해석</h2>${opts("q4why",["가장 많이 일치하면 동일인이다","분석한 모든 STR 구간이 일치해야 한다"])}<button class="btn" onclick="if(S.a.q4why==='1'){S.q4.why=1;save();toast('근거 확인')}else toast('다시 생각하세요')">확인</button>`;
-if(s===8)h+=`<h2>최종 DNA 판정</h2>${opts("q4f",["#1 김서진","#2 한도윤","#3 윤가람","#4 박세린","#5 최민재","#6 이채린"])}<div class="notice">이번 활동은 STR 비교 원리를 단순화한 교육용 모형입니다.</div>`;
+if(s===8)h+=`<h2>최종 DNA 판정</h2><p>현장 DNA와 용의자들의 STR 분석 결과를 비교하여, 어느 용의자의 DNA가 현장 시료와 일치하는지 서술하십시오.</p><div class="notice">용의자 번호·이름과 함께, 몇 개의 STR 구간이 어떤 이유로 일치한다고 판단했는지 근거를 작성하십시오.</div><textarea id="writtenQ4" placeholder="현장 DNA와 일치하는 용의자는 ...이며, 그 근거는 ...">${S.written[4]||""}</textarea><button class="btn" onclick="saveWritten(4,'writtenQ4')">답안 임시 저장</button><div class="notice">이번 활동은 STR 비교 원리를 단순화한 교육용 모형입니다.</div><div class="notice warn">교사 승인 전에는 다음 퀘스트가 열리지 않습니다.</div>`;
 qbody.innerHTML=h}
 function assignHtml(){let n=S.size,A=n===4?[["요원 A","1,2"],["요원 B","3"],["요원 C","4,5"],["요원 D","6"]]:n===3?[["요원 A","1,2"],["요원 B","3,4"],["요원 C","5,6"]]:[["요원 A","1,2,3"],["요원 B","4,5,6"]];return A.map(x=>`<div class="notice"><b>${x[0]}</b><br>용의자 #${x[1].replaceAll(","," · #")}</div>`).join("")}
 function filesHtml(d,n,ref){return assignHtml()+[1,2,3,4,5,6].map(i=>`<p><span class="k">#${i} ${n[i]}</span><br>이동거리: ${d[i].join(" · ")} cm</p>`).join("")+ref}
-function valid(){let q=S.q,s=S.st;if(q===1){if(s===2&&(!S.q1.preA||!S.q1.preB))return toast("A·B 반응 전 RGB를 모두 저장하세요."),0;if(s===3&&!S.q1.ctrl)return toast("변인 통제를 해결하세요."),0;if(s===6&&!S.q1.obs)return toast("육안 관찰을 저장하세요."),0;if(s===7&&(!S.q1.postA||!S.q1.postB))return toast("A·B 반응 후 RGB를 모두 저장하세요."),0;if(s===8&&!S.q1.reason)return toast("결과 해석을 완료하세요."),0;if(s===9&&((S.a.q1f==='0'?'A':'B')!==T.q1))return toast("실험 결과를 다시 검토하세요."),0}
-if(q===2){if(s===1&&!S.q2.pred)return toast("예측을 저장하세요."),0;if(s===2&&!S.q2.sensor)return toast("센서 특성을 확인하세요."),0;if(s>=3&&s<=6&&!S.q2.p[["A","B","C","D"][s-3]])return toast("현재 장소를 저장하세요."),0;if(s===7&&!S.q2.match)return toast("사건 조건과 가까운 장소를 선택하세요."),0;if(s===8&&!S.q2.limit)return toast("증거의 한계를 확인하세요."),0;if(s===9&&!S.q2.final)return toast("최종 판단을 저장하세요."),0}
-if(q===3){if(s===1&&!S.q3.secret)return toast("비밀 단어를 확인하세요."),0;if(s===3&&!S.q3.base)return toast("기준 측정을 완료하세요."),0;if(s===4&&!S.q3.test)return toast("자극 테스트를 완료하세요."),0;if(s===5&&!S.q3.review)return toast("결과를 검토하세요."),0;if(s===7&&!S.q3.final)return toast("최종 해석을 저장하세요."),0}
-if(q===4){if(s===0&&!S.q4.p)return toast("원리를 확인하세요."),0;if(s===1&&!S.q4.scene)return toast("현장 DNA를 해독하세요."),0;if(s===3&&!S.q4.dec)return toast("개별 해독을 완료하세요."),0;if(s===5&&!S.q4.table)return toast("비교표를 확인하세요."),0;if(s===6&&!S.q4.trap)return toast("4/5 문제를 해결하세요."),0;if(s===7&&!S.q4.why)return toast("증거 해석을 완료하세요."),0;if(s===8&&S.a.q4f!=="1")return toast("모든 STR 구간을 다시 비교하세요."),0}return 1}
+function valid(){let q=S.q,s=S.st;if(q===1){if(s===2&&(!S.q1.preA||!S.q1.preB))return toast("A·B 반응 전 RGB를 모두 저장하세요."),0;if(s===3&&!S.q1.ctrl)return toast("변인 통제를 해결하세요."),0;if(s===6&&!S.q1.obs)return toast("육안 관찰을 저장하세요."),0;if(s===7&&(!S.q1.postA||!S.q1.postB))return toast("A·B 반응 후 RGB를 모두 저장하세요."),0;if(s===8&&!S.q1.reason)return toast("결과 해석을 완료하세요."),0;if(s===9&&((S.written[1]||"").trim().length<10))return toast("시료와 과학적 근거를 서술형으로 작성하세요."),0}
+if(q===2){if(s===1&&!S.q2.pred)return toast("예측을 저장하세요."),0;if(s===2&&!S.q2.sensor)return toast("센서 특성을 확인하세요."),0;if(s>=3&&s<=6&&!S.q2.p[["A","B","C","D"][s-3]])return toast("현재 장소를 저장하세요."),0;if(s===7&&!S.q2.match)return toast("사건 조건과 가까운 장소를 선택하세요."),0;if(s===8&&!S.q2.limit)return toast("증거의 한계를 확인하세요."),0;if(s===9&&((S.written[2]||"").trim().length<10))return toast("측정 결과와 진술 평가를 서술형으로 작성하세요."),0}
+if(q===3){if(s===1&&!S.q3.secret)return toast("비밀 단어를 확인하세요."),0;if(s===3&&!S.q3.base)return toast("기준 측정을 완료하세요."),0;if(s===4&&!S.q3.test)return toast("자극 테스트를 완료하세요."),0;if(s===5&&!S.q3.review)return toast("결과를 검토하세요."),0;if(s===7&&((S.written[3]||"").trim().length<10))return toast("생체신호 결과의 의미와 한계를 서술하세요."),0}
+if(q===4){if(s===0&&!S.q4.p)return toast("원리를 확인하세요."),0;if(s===1&&!S.q4.scene)return toast("현장 DNA를 해독하세요."),0;if(s===3&&!S.q4.dec)return toast("개별 해독을 완료하세요."),0;if(s===5&&!S.q4.table)return toast("비교표를 확인하세요."),0;if(s===6&&!S.q4.trap)return toast("4/5 문제를 해결하세요."),0;if(s===7&&!S.q4.why)return toast("증거 해석을 완료하세요."),0;if(s===8&&((S.written[4]||"").trim().length<10))return toast("DNA 일치 용의자와 근거를 서술형으로 작성하세요."),0}return 1}
+
+function saveWritten(q,id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  S.written[q]=el.value;
+  save();
+  toast("서술형 답안 저장 완료");
+}
+function submitWrittenAnswer(q){
+  const id="writtenQ"+q;
+  const el=document.getElementById(id);
+  if(el){S.written[q]=el.value;save();}
+  if((S.written[q]||"").trim().length<10){toast("근거를 포함하여 10자 이상 작성하세요.");return;}
+  S.pendingApproval=q;
+  save();
+  showApprovalWait(q);
+}
+function showApprovalWait(q){
+  const body=document.getElementById("qbody");
+  document.getElementById("stepbar").innerHTML="";
+  document.getElementById("back").disabled=true;
+  document.getElementById("next").classList.add("hide");
+  body.innerHTML=`<div class="k">QUEST ${q} · TEACHER CHECK</div>
+  <h2>교사 확인 대기</h2>
+  <p>서술형 답안이 저장되었습니다.</p>
+  <div class="notice"><b>작성한 답안</b><br>${escapeHtml(S.written[q]||"")}</div>
+  <p>교사가 답안을 확인하고 다음 퀘스트 진행을 허용해야 합니다.</p>
+  <button class="btn primary" onclick="teacherApproveOpen()">교사 확인</button>
+  <p class="muted center">학생은 이 화면에서 기다리십시오.</p>`;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m]))}
+function teacherApproveOpen(){
+  resetRequested=false;
+  approvalRequested=true;
+  document.getElementById("modal").classList.add("on");
+  document.getElementById("teacherLoginBox").classList.remove("hide");
+  document.getElementById("panel").classList.add("hide");
+  document.getElementById("pin").value="";
+}
+function approveCurrentQuest(){
+  const q=S.pendingApproval;
+  if(!q)return;
+  if(!S.done.includes(q))S.done.push(q);
+  S.pendingApproval=null;
+  S.q=null;
+  S.st=0;
+  save();
+  closeT();
+  approvalRequested=false;
+  toast(`QUEST ${q} 교사 승인 완료`);
+  setTimeout(dash,500);
+}
+
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 async function finalAnalysis(){sh("analysis");let A=[["FINAL ANALYSIS",1000],["EVIDENCE #01\n비타민 C 병 바꿔치기",1700],["EVIDENCE #02\n진술과 측정 결과 불일치",1700],["EVIDENCE #03\n비공개 정보에 대한 생체신호 반응",1900],["FINAL EVIDENCE\n손톱 아래 혈액 DNA",1700],["DNA PATTERN MATCHED",1300],["SUSPECT #02",900],["범인은…",700],["한도윤",1800],["QUEST 5 UNLOCKED",1200]];for(let [x,t] of A){analysisText.innerHTML=x.replaceAll("\n","<br>");await wait(t)}openQ5()}
 let hint=0,hit=null;const HT=["세 단어를 문장으로 해석하지 마십시오.","이 정보는 특정한 위치를 나타냅니다.","전 세계 위치를 세 단어로 표현하는 시스템이 있습니다.","그 시스템은 what3words, 줄여서 w3w입니다.","what3words에서 세 단어를 검색하십시오.","형식은 단어.단어.단어 입니다."];
 function openQ5(){S.q=5;S.st=0;save();w3w.textContent=T.w3w||"좌표 미등록";renderHints();sh("q5");clearInterval(hit);hit=setInterval(()=>{if(hint<6){hint++;S.hint=hint;save();renderHints()}},180000)}
 function renderHints(){hint=S.hint||0;hints.innerHTML=HT.map((x,i)=>`<div class="hint ${i<hint?"":"lock"}"><div class="k">HINT ${i+1}</div>${i<hint?x:"3분 후 자동 해금"}</div>`).join("")}
 function field(){clearInterval(hit);S.q=5;S.st=99;save();sh("field")}
-function resume(){if(S.q===5&&S.st===99)return sh("field");if(S.q===5)return openQ5();if(S.q){renderQ();return sh("quest")}if(S.done.length)return dash();if(S.sus){renderSus();return sh("sus")}if(S.missionSeen){renderBrief();return sh("brief")}sh("mission")}
-let resetRequested=false;
+function resume(){if(S.pendingApproval){S.q=S.pendingApproval;sh("quest");showApprovalWait(S.pendingApproval);return}if(S.q===5&&S.st===99)return sh("field");if(S.q===5)return openQ5();if(S.q){renderQ();return sh("quest")}if(S.done.length)return dash();if(S.sus){renderSus();return sh("sus")}if(S.missionSeen){renderBrief();return sh("brief")}sh("mission")}
+let resetRequested=false;let approvalRequested=false;
 function teacher(reset){
   resetRequested=!!reset;
   document.getElementById("modal").classList.add("on");
@@ -144,11 +202,18 @@ function teacher(reset){
 }
 function closeT(){
   resetRequested=false;
+  approvalRequested=false;
   document.getElementById("modal").classList.remove("on");
 }
 function teacherLoginFn(){
   const entered=document.getElementById("pin").value;
   if(entered!==T.pin){toast("PIN이 올바르지 않습니다.");return;}
+  if(approvalRequested&&S.pendingApproval){
+    if(confirm(`QUEST ${S.pendingApproval}의 서술형 답안을 확인했습니다. 다음 퀘스트 진행을 허용할까요?`)){
+      approveCurrentQuest();
+    }
+    return;
+  }
   if(resetRequested){
     if(confirm("현재 기기의 수사 진행 기록을 초기화하고 처음부터 시작할까요?")){
       localStorage.removeItem("c17v3");
