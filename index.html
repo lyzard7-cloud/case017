@@ -111,7 +111,104 @@ else{submitWrittenAnswer(S.q)}
 function setSel(el,key,val){S.a[key]=val;save();el.parentElement.querySelectorAll("button").forEach(b=>b.classList.remove("sel"));el.classList.add("sel")}
 function opts(key,arr){return `<div class="choice">${arr.map((x,i)=>`<button onclick="setSel(this,'${key}','${i}')">${x}</button>`).join("")}</div>`}
 let stream=null,raf=null,RGB={r:0,g:0,b:0,l:0};
-async function cam(id,torch=false){stopCam();try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});let v=document.getElementById(id);v.srcObject=stream;await v.play();if(torch){try{let tr=stream.getVideoTracks()[0],c=tr.getCapabilities?.();if(c?.torch)await tr.applyConstraints({advanced:[{torch:true}]})}catch(e){}}let c=document.createElement("canvas");c.width=c.height=64;let x=c.getContext("2d",{willReadFrequently:true});function loop(){if(v.videoWidth){x.drawImage(v,0,0,64,64);let d=x.getImageData(0,0,64,64).data,r=0,g=0,b=0,n=d.length/4;for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}r/=n;g/=n;b/=n;RGB={r:Math.round(r),g:Math.round(g),b:Math.round(b),l:Math.round(.2126*r+.7152*g+.0722*b)};["R","G","B","L"].forEach((k,i)=>{let e=document.getElementById("m"+k);if(e)e.textContent=[RGB.r,RGB.g,RGB.b,RGB.l][i]})}raf=requestAnimationFrame(loop)}loop()}catch(e){toast("카메라 권한과 HTTPS 연결을 확인하세요.")}}
+async function cam(id,torch=false){
+  stopCam();
+
+  // 먼저 실행 환경을 확인해 학생 휴대폰에서 원인을 바로 알 수 있게 한다.
+  if(!window.isSecureContext){
+    toast("HTTPS 보안 연결이 아닙니다. GitHub Pages의 https:// 주소로 다시 접속하세요.");
+    return;
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    toast("이 브라우저에서는 카메라 기능을 사용할 수 없습니다. Chrome/Safari 최신 버전으로 열어주세요.");
+    return;
+  }
+
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"}},
+      audio:false
+    });
+
+    let v=document.getElementById(id);
+    if(!v){
+      stopCam();
+      toast("카메라 화면을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도하세요.");
+      return;
+    }
+
+    v.srcObject=stream;
+    await v.play();
+
+    if(torch){
+      try{
+        let tr=stream.getVideoTracks()[0],c=tr.getCapabilities?.();
+        if(c?.torch)await tr.applyConstraints({advanced:[{torch:true}]});
+      }catch(e){
+        console.warn("플래시 사용 불가:",e);
+      }
+    }
+
+    let c=document.createElement("canvas");
+    c.width=c.height=64;
+    let x=c.getContext("2d",{willReadFrequently:true});
+
+    function loop(){
+      if(v.videoWidth){
+        x.drawImage(v,0,0,64,64);
+        let d=x.getImageData(0,0,64,64).data,r=0,g=0,b=0,n=d.length/4;
+        for(let i=0;i<d.length;i+=4){
+          r+=d[i];g+=d[i+1];b+=d[i+2];
+        }
+        r/=n;g/=n;b/=n;
+        RGB={
+          r:Math.round(r),
+          g:Math.round(g),
+          b:Math.round(b),
+          l:Math.round(.2126*r+.7152*g+.0722*b)
+        };
+        ["R","G","B","L"].forEach((k,i)=>{
+          let e=document.getElementById("m"+k);
+          if(e)e.textContent=[RGB.r,RGB.g,RGB.b,RGB.l][i];
+        });
+      }
+      raf=requestAnimationFrame(loop);
+    }
+    loop();
+
+  }catch(e){
+    console.error("카메라 오류:",e);
+
+    let msg="카메라를 시작하지 못했습니다.";
+    switch(e?.name){
+      case "NotAllowedError":
+      case "PermissionDeniedError":
+        msg="카메라 권한이 차단되었습니다. 주소창의 사이트 설정 또는 휴대폰 설정에서 이 사이트의 카메라 권한을 '허용'으로 변경하세요.";
+        break;
+      case "NotFoundError":
+      case "DevicesNotFoundError":
+        msg="사용 가능한 카메라를 찾지 못했습니다. 카메라가 있는 기기인지 확인하세요.";
+        break;
+      case "NotReadableError":
+      case "TrackStartError":
+        msg="카메라를 사용할 수 없습니다. 다른 앱이나 다른 브라우저 탭이 카메라를 사용 중인지 확인한 뒤 다시 시도하세요.";
+        break;
+      case "OverconstrainedError":
+      case "ConstraintNotSatisfiedError":
+        msg="요청한 카메라 조건을 이 기기가 지원하지 않습니다. 페이지를 새로고침한 뒤 다시 시도하세요.";
+        break;
+      case "SecurityError":
+        msg="보안 설정 때문에 카메라 접근이 차단되었습니다. 반드시 https:// 주소에서 접속하세요.";
+        break;
+      case "AbortError":
+        msg="카메라 연결이 중단되었습니다. 잠시 후 다시 시도하세요.";
+        break;
+      default:
+        msg=`카메라 오류: ${e?.name||"알 수 없는 오류"}. 페이지 새로고침 후 다시 시도하세요.`;
+    }
+    toast(msg);
+  }
+}
 function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(raf){cancelAnimationFrame(raf);raf=null}}
 const cm=()=>`<div class="camera"><video id="cam" playsinline muted></video><div class="ret"></div></div><div class="metrics"><div class="metric"><b id="mR">--</b><span>R</span></div><div class="metric"><b id="mG">--</b><span>G</span></div><div class="metric"><b id="mB">--</b><span>B</span></div><div class="metric"><b id="mL">--</b><span>밝기</span></div></div>`;
 function renderQ(){renderBar();if(S.q===1)q1();if(S.q===2)q2();if(S.q===3)q3();if(S.q===4)q4()}
