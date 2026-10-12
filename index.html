@@ -101,7 +101,7 @@ function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S
 function dash(){S.q=null;S.st=0;save();teamTxt.textContent=S.team;prog.textContent=`${S.agent} · ${S.done.length}/4 완료`;let cur=O[S.team].find(x=>!S.done.includes(x));qlist.innerHTML="";O[S.team].forEach(q=>{let done=S.done.includes(q),open=q===cur,e=document.createElement("div");e.className="quest "+(done?"done":open?"":"lock");e.innerHTML=`<div class="num">Q${q}</div><div><div>${QT[q][0]}</div><div class="muted">${QT[q][1]}</div></div>`;if(done||open)e.onclick=()=>openQ(q);qlist.appendChild(e)});finalBtn.disabled=S.done.length<4;sh("dash")}
 function openQ(q){S.q=q;S.st=0;save();renderQ();sh("quest")}
 function nsteps(q){return {1:10,2:10,3:8,4:9}[q]}
-function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.disabled=S.st===0;next.textContent=S.st===nsteps(S.q)-1?"서술형 답안 제출":"다음 →"}
+function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.classList.remove("hide");next.classList.remove("hide");back.disabled=S.st===0;next.disabled=false;next.textContent=S.st===nsteps(S.q)-1?"서술형 답안 제출":"다음 →"}
 function step(d){
 if(d<0){S.st=Math.max(0,S.st-1);save();renderQ();return}
 if(!valid())return;
