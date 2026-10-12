@@ -41,8 +41,29 @@
 <section id="quest" class="scr"><div class="card"><div id="stepbar" class="steps"></div><div id="qbody"></div><div class="grid2"><button id="back" class="btn ghost" onclick="step(-1)">← 이전</button><button id="next" class="btn primary" onclick="step(1)">다음 →</button></div></div></section>
 <section id="analysis" class="scr"><div class="card center"><div class="k">FINAL ANALYSIS</div><div id="analysisText" class="stim"></div></div></section>
 <section id="q5" class="scr"><div class="card"><div class="k">QUEST 5 · LAST EVIDENCE</div><h2>마지막 증거의 위치</h2><div id="w3w" class="code"></div><p>화면에 제시된 세 단어가 가리키는 실제 위치를 찾아 이동하십시오.</p><div class="notice">필요한 힌트는 교사가 구두로 제공합니다.</div><button class="btn primary" onclick="field()">위치를 알아냈습니다</button></div></section>
-<section id="field" class="scr"><div class="card"><div class="k">FIELD SEARCH</div><h2>현장 수색</h2><p>해당 위치로 이동하여 NFC 태그를 찾으십시오.</p><div class="notice">뛰지 마십시오. 다른 팀에 위치를 알려주지 마십시오.</div></div></section>
-<section id="final" class="scr"><div class="card center"><div style="font-size:70px;color:var(--ok)">✓</div><div class="k">FINAL EVIDENCE FOUND</div><h1>CASE CLOSED</h1><p>강일 심화과학반 특별수사팀의 최종 임무가 완료되었습니다.</p><div class="notice ok">추측이 아니라 증거로 판단하라.</div></div></section>
+<section id="field" class="scr"><div class="card"><div class="k">FIELD SEARCH</div><h2>현장 수색</h2><p>해당 위치로 이동하여 숨겨진 QR코드를 찾으십시오.</p><div class="notice">QR코드를 발견하면 스캔하여 최종 확인 화면으로 이동하십시오. 뛰지 말고, 다른 팀에 위치를 알려주지 마십시오.</div></div></section>
+<section id="final" class="scr">
+<div class="card center">
+  <div id="finalQuestion">
+    <div class="k">FINAL CHECK</div>
+    <h1>최종 범인의 이름은?</h1>
+    <p>지금까지 확보한 모든 증거를 종합하여 최종 범인의 이름을 입력하십시오.</p>
+    <div class="field" style="max-width:420px;margin:20px auto">
+      <label>범인 이름</label>
+      <input id="culpritName" type="text" autocomplete="off" placeholder="이름을 입력하세요">
+    </div>
+    <button class="btn primary" onclick="checkCulprit()">최종 답안 제출</button>
+    <div id="culpritMsg" style="margin-top:14px"></div>
+  </div>
+  <div id="finalSuccess" class="hide">
+    <div style="font-size:70px;color:var(--ok)">✓</div>
+    <div class="k">CASE CLOSED</div>
+    <h1>축하합니다!</h1>
+    <p style="font-size:20px">모든 퀘스트를 완료하였습니다.</p>
+    <div class="notice ok">최종 범인: 한도윤<br>추측이 아니라 증거로 사건을 해결했습니다.</div>
+  </div>
+</div>
+</section>
 </div><div class="hot" onclick="teacher(false)"></div><div id="modal" class="modal"><div class="sheet"><div class="k">TEACHER CONTROL</div><h2>교사용 설정</h2><div id="teacherLoginBox"><div class="field"><label>PIN</label><input id="pin" type="password"></div><button class="btn primary" onclick="teacherLoginFn()">열기</button><button class="btn ghost" onclick="closeT()">닫기</button></div><div id="panel" class="hide"><div class="field"><label>Q1 비타민 C 정답</label><select id="tq1"><option>A</option><option>B</option></select></div><div class="field"><label>Q2 사건 기준 밝기</label><input id="tl"></div><div class="field"><label>Q2 정답 장소</label><select id="tq2"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>장소 A~D 이름 (쉼표 구분)</label><input id="tpl"></div><div class="field"><label>w3w</label><input id="tw"></div><div class="field"><label>NFC URL</label><input id="nfc" readonly></div><button class="btn primary" onclick="saveT()">저장</button><button class="btn ghost" onclick="resetAll()">진행기록 초기화</button></div></div></div><div id="toast" class="toast"></div>
 <script>
 const D={pin:"017",q1:"A",q2:"C",light:"38",places:["장소 A","장소 B","장소 C","장소 D"],w3w:"취업.비옷.아꼈다"};
@@ -864,6 +885,28 @@ function closeT(){
   approvalRequested=false;
   document.getElementById("modal").classList.remove("on");
 }
+
+function checkCulprit(){
+  const input=document.getElementById("culpritName");
+  const msg=document.getElementById("culpritMsg");
+  const answer=(input?.value||"").replace(/\s+/g,"").trim();
+
+  if(!answer){
+    if(msg)msg.innerHTML='<div class="notice warn">범인의 이름을 입력하십시오.</div>';
+    return;
+  }
+
+  if(answer==="한도윤"){
+    S.finalSolved=1;
+    save();
+    document.getElementById("finalQuestion")?.classList.add("hide");
+    document.getElementById("finalSuccess")?.classList.remove("hide");
+  }else{
+    if(msg)msg.innerHTML='<div class="notice warn">정답이 아닙니다. 지금까지 확보한 증거를 다시 종합해 보십시오.</div>';
+    if(input){input.select();input.focus();}
+  }
+}
+
 function teacherLoginFn(){
   const entered=document.getElementById("pin").value;
   if(entered!==T.pin){toast("PIN이 올바르지 않습니다.");return;}
@@ -904,7 +947,7 @@ function resetAll(){
     location.href=location.pathname;
   }
 }
-(function(){let p=new URLSearchParams(location.search);if(p.get("final")==="1"){sh("final");return}if(S.agent&&S.start){recover.classList.remove("hide");newForm.classList.add("hide");recoverText.textContent=`${S.team}팀 · ${S.agent} · ${S.q?`QUEST ${S.q} ${S.st+1}단계`:`${S.done.length}/4 완료`}`}})();
+(function(){let p=new URLSearchParams(location.search);if(p.get("final")==="1"){sh("final");setTimeout(()=>{if(S.finalSolved){document.getElementById("finalQuestion")?.classList.add("hide");document.getElementById("finalSuccess")?.classList.remove("hide");}},0);return}if(S.agent&&S.start){recover.classList.remove("hide");newForm.classList.add("hide");recoverText.textContent=`${S.team}팀 · ${S.agent} · ${S.q?`QUEST ${S.q} ${S.st+1}단계`:`${S.done.length}/4 완료`}`}})();
 </script>
 <script type="module">
 import { firebaseConfig } from "./firebase-config.js";
