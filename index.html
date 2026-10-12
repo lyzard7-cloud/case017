@@ -40,7 +40,7 @@
 <section id="dash" class="scr"><div class="card"><div class="k">FIELD DASHBOARD</div><h2><span id="teamTxt"></span> 수사팀</h2><p id="prog" class="muted"></p></div><div id="qlist"></div><div class="card"><button id="finalBtn" class="btn primary" onclick="finalAnalysis()" disabled>FINAL ANALYSIS</button></div></section>
 <section id="quest" class="scr"><div class="card"><div id="stepbar" class="steps"></div><div id="qbody"></div><div class="grid2"><button id="back" class="btn ghost" onclick="step(-1)">← 이전</button><button id="next" class="btn primary" onclick="step(1)">다음 →</button></div></div></section>
 <section id="analysis" class="scr"><div class="card center"><div class="k">FINAL ANALYSIS</div><div id="analysisText" class="stim"></div></div></section>
-<section id="q5" class="scr"><div class="card"><div class="k">QUEST 5 · LAST EVIDENCE</div><h2>마지막 증거의 위치</h2><div id="w3w" class="code"></div><p>이 세 단어가 가리키는 실제 위치를 찾으십시오.</p><div id="hints"></div><button class="btn primary" onclick="field()">위치를 알아냈습니다</button></div></section>
+<section id="q5" class="scr"><div class="card"><div class="k">QUEST 5 · LAST EVIDENCE</div><h2>마지막 증거의 위치</h2><div id="w3w" class="code"></div><p>화면에 제시된 세 단어가 가리키는 실제 위치를 찾아 이동하십시오.</p><div class="notice">필요한 힌트는 교사가 구두로 제공합니다.</div><button class="btn primary" onclick="field()">위치를 알아냈습니다</button></div></section>
 <section id="field" class="scr"><div class="card"><div class="k">FIELD SEARCH</div><h2>현장 수색</h2><p>해당 위치로 이동하여 NFC 태그를 찾으십시오.</p><div class="notice">뛰지 마십시오. 다른 팀에 위치를 알려주지 마십시오.</div></div></section>
 <section id="final" class="scr"><div class="card center"><div style="font-size:70px;color:var(--ok)">✓</div><div class="k">FINAL EVIDENCE FOUND</div><h1>CASE CLOSED</h1><p>강일 심화과학반 특별수사팀의 최종 임무가 완료되었습니다.</p><div class="notice ok">추측이 아니라 증거로 판단하라.</div></div></section>
 </div><div class="hot" onclick="teacher(false)"></div><div id="modal" class="modal"><div class="sheet"><div class="k">TEACHER CONTROL</div><h2>교사용 설정</h2><div id="teacherLoginBox"><div class="field"><label>PIN</label><input id="pin" type="password"></div><button class="btn primary" onclick="teacherLoginFn()">열기</button><button class="btn ghost" onclick="closeT()">닫기</button></div><div id="panel" class="hide"><div class="field"><label>Q1 비타민 C 정답</label><select id="tq1"><option>A</option><option>B</option></select></div><div class="field"><label>Q2 사건 기준 밝기</label><input id="tl"></div><div class="field"><label>Q2 정답 장소</label><select id="tq2"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>장소 A~D 이름 (쉼표 구분)</label><input id="tpl"></div><div class="field"><label>w3w</label><input id="tw"></div><div class="field"><label>NFC URL</label><input id="nfc" readonly></div><button class="btn primary" onclick="saveT()">저장</button><button class="btn ghost" onclick="resetAll()">진행기록 초기화</button></div></div></div><div id="toast" class="toast"></div>
@@ -826,10 +826,19 @@ function approveCurrentQuest(){
 
 function wait(ms){return new Promise(r=>setTimeout(r,ms))}
 async function finalAnalysis(){sh("analysis");let A=[["FINAL ANALYSIS",1000],["EVIDENCE #01\n비타민 C 병 바꿔치기",1700],["EVIDENCE #02\n진술과 측정 결과 불일치",1700],["EVIDENCE #03\n비공개 정보에 대한 생체신호 반응",1900],["FINAL EVIDENCE\n손톱 아래 혈액 DNA",1700],["DNA PATTERN MATCHED",1300],["SUSPECT #02",900],["범인은…",700],["한도윤",1800],["QUEST 5 UNLOCKED",1200]];for(let [x,t] of A){analysisText.innerHTML=x.replaceAll("\n","<br>");await wait(t)}openQ5()}
-let hint=0,hit=null;const HT=["세 단어를 문장으로 해석하지 마십시오.","이 정보는 특정한 위치를 나타냅니다.","전 세계 위치를 세 단어로 표현하는 시스템이 있습니다.","그 시스템은 what3words, 줄여서 w3w입니다.","what3words에서 세 단어를 검색하십시오.","형식은 단어.단어.단어 입니다."];
-function openQ5(){S.q=5;S.st=0;save();w3w.textContent=T.w3w||"좌표 미등록";renderHints();sh("q5");clearInterval(hit);hit=setInterval(()=>{if(hint<6){hint++;S.hint=hint;save();renderHints()}},180000)}
-function renderHints(){hint=S.hint||0;hints.innerHTML=HT.map((x,i)=>`<div class="hint ${i<hint?"":"lock"}"><div class="k">HINT ${i+1}</div>${i<hint?x:"3분 후 자동 해금"}</div>`).join("")}
-function field(){clearInterval(hit);S.q=5;S.st=99;save();sh("field")}
+function openQ5(){
+  S.q=5;
+  S.st=0;
+  save();
+  w3w.textContent=T.w3w||"좌표 미등록";
+  sh("q5");
+}
+function field(){
+  S.q=5;
+  S.st=99;
+  save();
+  sh("field");
+}
 function resume(){
   if(S.pendingApproval){S.q=S.pendingApproval;sh("quest");showApprovalWait(S.pendingApproval);return}
   if(S.q===5&&S.st===99)return sh("field");
