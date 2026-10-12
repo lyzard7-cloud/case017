@@ -100,7 +100,7 @@ function renderSus(){let x=SU[S.sus];susBody.innerHTML=`<div class="k">SUSPECT #
 function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S.sus<5){S.sus++;save();renderSus();return}if(d>0&&S.sus===5)dash()}
 function dash(){S.q=null;S.st=0;save();teamTxt.textContent=S.team;prog.textContent=`${S.agent} · ${S.done.length}/4 완료`;let cur=O[S.team].find(x=>!S.done.includes(x));qlist.innerHTML="";O[S.team].forEach(q=>{let done=S.done.includes(q),open=q===cur,e=document.createElement("div");e.className="quest "+(done?"done":open?"":"lock");e.innerHTML=`<div class="num">Q${q}</div><div><div>${QT[q][0]}</div><div class="muted">${QT[q][1]}</div></div>`;if(done||open)e.onclick=()=>openQ(q);qlist.appendChild(e)});finalBtn.disabled=S.done.length<4;sh("dash")}
 function openQ(q){S.q=q;S.st=0;save();renderQ();sh("quest")}
-function nsteps(q){return {1:10,2:6,3:8,4:9}[q]}
+function nsteps(q){return {1:10,2:6,3:9,4:9}[q]}
 function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.classList.remove("hide");next.classList.remove("hide");back.disabled=S.st===0;next.disabled=false;next.textContent=S.st===nsteps(S.q)-1?"서술형 답안 제출":"다음 →"}
 function step(d){
 if(d<0){S.st=Math.max(0,S.st-1);save();renderQ();return}
@@ -209,19 +209,96 @@ function placeSave(k){
   renderQ();
 }
 
-function q3(){let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/8</div>`;
-if(s===0)h+=`<h2>피실험자를 정하십시오</h2><p>한 명은 피실험자, 나머지는 측정·진행·기록 역할을 맡습니다.</p>`;
-if(s===1)h+=`<h2>피실험자만 화면을 보십시오</h2><p>다른 팀원은 시선을 돌리십시오.</p><div id="secret" class="stim">${S.q3.secret?"확인 완료":"준비"}</div><button class="btn primary" onclick="secret()">비밀 단어 확인</button>`;
-if(s===2)h+=`<h2>측정 원리</h2><p>스마트폰 카메라와 플래시로 손가락 혈류의 광학적 변화를 관찰합니다.</p><div class="notice">생체신호 변화는 거짓말이나 범행을 직접 증명하지 않습니다.</div>`;
-if(s===3)h+=`<h2>기준 신호</h2><p>손가락을 후면 카메라와 플래시에 가볍게 올리고 움직이지 마십시오.</p><button class="btn primary" onclick="baseline()">10초 기준 측정</button><p id="bst" class="muted">${S.q3.base?"BASELINE COMPLETE":"대기"}</p>`;
-if(s===4)h+=`<h2>자극 테스트</h2><p>다음에 나올 단어는 미리 공개되지 않습니다.</p><div id="stim" class="stim">준비</div><button class="btn primary" onclick="stimTest()">자극 테스트 시작</button><p class="muted">현재 단어 하나만 표시됩니다.</p>`;
-if(s===5)h+=`<h2>결과 분석</h2><div class="matrix"><table><tr><th>단어</th><th>반응 변화</th></tr>${(S.q3.res||[]).map(x=>`<tr><td>${x.w}</td><td>${x.s}</td></tr>`).join("")}</table></div><div class="notice">${S.q3.msg||""}</div><button class="btn" onclick="S.q3.review=1;save();toast('검토 완료')">결과 검토 완료</button>`;
-if(s===6)h+=`<h2>한도윤 생체신호 기록</h2><p>이제 실제 사건 기록을 분석합니다.</p><div class="matrix"><table><tr><th>단어</th><th>반응</th></tr><tr><td>현미경</td><td>+2.4%</td></tr><tr><td>USB</td><td>+1.9%</td></tr><tr><td>비커</td><td>+3.1%</td></tr><tr><td>보라색 라텍스 장갑</td><td>+12.4%</td></tr><tr><td>복사기</td><td>+2.7%</td></tr></table></div><p>보라색 라텍스 장갑은 외부에 공개되지 않은 현장 정보입니다.</p>`;
-if(s===7)h+=`<h2>최종 증거 판단</h2><p>한도윤의 생체신호 기록에서 ‘보라색 라텍스 장갑’에 대한 반응이 크게 나타난 사실을 어떻게 해석할 수 있는지 서술하십시오.</p><div class="notice">생체신호만으로 범행이나 거짓말을 확정할 수 있는지도 함께 고려하십시오.</div><textarea id="writtenQ3" placeholder="이 결과는 한도윤이 ... 가능성을 보여주지만, ...">${S.written[3]||""}</textarea><button class="btn" onclick="saveWritten(3,'writtenQ3')">답안 임시 저장</button><div class="notice warn">교사가 답안을 확인하고 허용해야 다음 퀘스트로 진행할 수 있습니다.</div>`;
-qbody.innerHTML=h}
-function secret(){let W=["현미경","USB","비커","보라색 라텍스 장갑","복사기","유리병","피펫","노트북"];S.q3.secret=S.q3.secret||W[Math.floor(Math.random()*W.length)];save();secret.textContent=S.q3.secret;setTimeout(()=>secret.textContent="비밀 정보 삭제 완료",5000)}
-async function baseline(){try{await cam("none",true)}catch(e){}S.q3.base=1;save();let e=document.getElementById("bst");e.textContent="측정 중...";setTimeout(()=>{e.textContent="BASELINE COMPLETE";stopCam()},10000)}
-async function stimTest(){if(!S.q3.secret)return toast("비밀 단어를 먼저 확인하세요.");let W=["현미경","USB","비커","보라색 라텍스 장갑","복사기","유리병","피펫","노트북"].sort(()=>Math.random()-.5),R=[];for(let w of W){stim.textContent=w;await wait(2700);let s=(Math.random()*4+1+(w===S.q3.secret?Math.random()*7+7:0)).toFixed(1);R.push({w,s});stim.textContent="+";await wait(900)}R.sort((a,b)=>+b.s-+a.s);S.q3.res=R;S.q3.test=1;S.q3.msg=R[0].w===S.q3.secret?`가장 큰 반응과 비밀 단어가 일치했습니다: ${S.q3.secret}`:`가장 큰 반응은 ${R[0].w}, 실제 비밀 단어는 ${S.q3.secret}. 불일치도 의미 있는 결과입니다.`;save();stim.textContent="테스트 완료"}
+function q3(){
+let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/9</div>`;
+
+if(s===0)h+=`
+<h2>생체신호 분석 임무</h2>
+<p>이번 퀘스트에서는 스마트폰 카메라와 플래시를 이용한 <b>PPG(광용적맥파)</b> 원리를 체험한 뒤, 한도윤의 가상 생체신호 기록을 해석합니다.</p>
+<div class="notice">PPG 반응만으로 거짓말 여부를 판정할 수는 없습니다. 의미 있는 자극에 대한 생리적 변화 가능성을 살펴보는 활동입니다.</div>
+<p>먼저 팀원 중 한 명을 피실험자로 정하십시오.</p>`;
+
+if(s===1)h+=`
+<h2>피실험자만 화면을 보십시오</h2>
+<div class="notice warn">아직 비밀 단어는 표시되지 않습니다.</div>
+<p>피실험자 한 명만 스마트폰을 들고 화면을 볼 준비를 하십시오.</p>
+<p>나머지 팀원은 화면에서 시선을 돌리거나 뒤를 돌아 <b>비밀 단어를 볼 수 없는 상태</b>를 만들어야 합니다.</p>
+<div class="notice">모두 준비되었다면 피실험자만 아래 버튼을 누르십시오.</div>
+<button class="btn primary" onclick="revealSecretWord()">피실험자만 비밀 단어 확인</button>
+<div id="secretBox"></div>`;
+
+if(s===2)h+=`
+<h2>PPG 측정 원리</h2>
+<p>손가락을 카메라 렌즈와 플래시 위에 가볍게 올리면 혈액량 변화에 따라 영상의 밝기 신호가 미세하게 달라질 수 있습니다.</p>
+<p>이번 활동에서는 특정 단어를 보았을 때 나타나는 변화 가능성을 관찰하지만, 이러한 변화는 긴장·움직임·주의집중 등 여러 요인의 영향을 받을 수 있습니다.</p>
+<div class="notice">따라서 “반응이 크다 = 거짓말”로 해석해서는 안 됩니다.</div>`;
+
+if(s===3)h+=`
+<h2>기준 신호 측정</h2>
+<p>피실험자는 손가락을 카메라와 플래시 위에 올리고 약 10초 동안 편안히 유지하십시오.</p>
+<button class="btn" onclick="cam('ppg')">카메라 측정 시작</button>
+${cm()}
+<div class="notice">측정값이 안정되면 다음 단계로 이동하십시오.</div>`;
+
+if(s===4)h+=`
+<h2>단어 자극 테스트</h2>
+<p>이제 화면에 단어가 하나씩 무작위로 나타납니다. 피실험자는 자연스럽게 바라보고, 나머지 팀원은 관찰하십시오.</p>
+<div class="notice">다음 단어가 무엇인지 미리 보여주지 않습니다.</div>
+<button class="btn primary" onclick="runStimulusTest()">자극 테스트 시작</button>
+<div id="stimulusArea" style="text-align:center;margin-top:18px"></div>`;
+
+if(s===5)h+=`
+<h2>우리 팀의 반응 결과 해석</h2>
+<p>가장 큰 반응이 비밀 단어와 일치했는지 비교하십시오.</p>
+<div class="notice">일치해도, 일치하지 않아도 모두 가능한 결과입니다. 움직임·긴장·단어의 개인적 의미·측정 오차가 영향을 줄 수 있습니다.</div>
+${renderStimulusResults()}`;
+
+if(s===6)h+=`
+<h2>한도윤의 가상 생체신호 기록</h2>
+<p>이제 수사 기록에 포함된 한도윤의 사전 측정 데이터를 확인하십시오.</p>
+<div class="matrix"><table>
+<tr><th>제시 단어</th><th>신호 변화</th></tr>
+<tr><td>현미경</td><td>+2.4%</td></tr>
+<tr><td>USB</td><td>+1.9%</td></tr>
+<tr><td>비커</td><td>+3.1%</td></tr>
+<tr><td>보라색 라텍스 장갑</td><td>+12.4%</td></tr>
+<tr><td>복사기</td><td>+2.7%</td></tr>
+<tr><td>유리병</td><td>+3.0%</td></tr>
+</table></div>
+<div class="notice warn">‘보라색 라텍스 장갑’은 사건 현장에서 공개되지 않은 정보입니다.</div>`;
+
+if(s===7)h+=`
+<h2>증거 해석</h2>
+<p>한도윤은 다른 단어보다 ‘보라색 라텍스 장갑’에서 훨씬 큰 반응을 보였습니다.</p>
+<div class="notice">이 결과는 한도윤이 공개되지 않은 사건 정보에 특별한 인지적·정서적 반응을 보였을 가능성을 시사할 수 있습니다. 그러나 이것만으로 범행이나 거짓말을 확정할 수는 없습니다.</div>
+<p>최종 답안에서는 <b>무엇을 시사하는지</b>와 <b>왜 단정할 수 없는지</b>를 함께 설명하십시오.</p>`;
+
+if(s===8)h+=`
+<h2>QUEST 3 최종 답안</h2>
+<p>한도윤이 ‘보라색 라텍스 장갑’에 보인 큰 생체신호 반응은 무엇을 의미할 수 있습니까? 또한 이 결과만으로 범인이라고 단정할 수 없는 이유를 함께 서술하십시오.</p>
+<textarea id="writtenQ3" placeholder="예: 한도윤은 공개되지 않은 현장 정보인 보라색 라텍스 장갑에 큰 반응을 보였으므로 ... 가능성이 있다. 그러나 PPG 반응은 ...의 영향을 받을 수 있으므로 ...">${S.written[3]||""}</textarea>
+<button class="btn" onclick="saveWritten(3,'writtenQ3')">답안 임시 저장</button>
+<div class="notice warn">답안을 제출하면 팀 전체가 교사 승인 대기 상태가 됩니다.</div>`;
+
+qbody.innerHTML=h
+}
+
+function revealSecretWord(){
+  const box=document.getElementById("secretBox");
+  if(!box)return;
+  box.innerHTML=`
+    <div class="notice" style="margin-top:16px;text-align:center">
+      <div class="muted" style="font-size:12px">피실험자만 5초 동안 확인</div>
+      <div style="font-size:30px;letter-spacing:1px;margin:8px 0">보라색 라텍스 장갑</div>
+      <div class="muted">기억한 뒤 화면을 다른 팀원에게 다시 보여주지 마십시오.</div>
+    </div>`;
+  setTimeout(()=>{
+    if(box){
+      box.innerHTML=`<div class="notice" style="margin-top:16px;text-align:center">비밀 단어가 숨겨졌습니다. 피실험자는 내용을 말하지 마십시오.</div>`;
+    }
+  },5000);
+}
+
 function q4(){let s=S.st,h=`<div class="k">QUEST 4 · ${s+1}/9</div>`,dist={scene:[9,7,5,4,2],1:[9,7,5,3,2],2:[9,7,5,4,2],3:[9,7,6,4,2],4:[9,8,5,4,2],5:[9,7,5,4,3],6:[8,7,5,4,2]},names=["","김서진","한도윤","윤가람","박세린","최민재","이채린"];
 let ref=`<div class="matrix"><table><tr><th>이동거리</th><th>STR 반복</th></tr>${[9,8,7,6,5,4,3,2].map(d=>`<tr><td>${d}cm</td><td>${11-d}</td></tr>`).join("")}</table></div>`;
 if(s===0)h+=`<h2>전기영동 원리</h2><p>짧은 DNA 조각일수록 더 멀리 이동합니다. 더 멀리 이동한 조각의 STR 반복 횟수는?</p>${opts("q4p",["더 많다","더 적다"])}<button class="btn" onclick="if(S.a.q4p==='1'){S.q4.p=1;save();toast('원리 확인')}else toast('다시 생각하세요')">확인</button>`;
