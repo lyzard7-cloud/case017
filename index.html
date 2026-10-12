@@ -37,18 +37,18 @@ let T=JSON.parse(localStorage.getItem("c17setv3")||"null")||D;
 const O={A:[1,2,3,4],B:[2,3,4,1],C:[3,4,1,2],D:[4,1,2,3]};
 const QT={1:["바꿔치기된 비타민 병","화학·RGB"],2:["어두운 복도의 진술","빛·상대 밝기"],3:["범인은 이 단어를 알고 있다","PPG 생체신호"],4:["피해자의 손톱 아래 흔적","DNA·STR"]};
 const BL=[
-"사건 개요
+`사건 개요
 
-오늘 오후 4시 38분, 미래과학연구센터에서 선임연구원 강민혁이 자신의 연구실에서 의식을 잃은 채 발견되었습니다. 강 연구원은 최근 중요한 연구 프로젝트의 실험 데이터를 검토하고 있었으며, 평소 오후마다 노란색 비타민 C 음료를 마시는 습관이 있었습니다.",
-"현장 단서
+오늘 오후 4시 38분, 미래과학연구센터에서 선임연구원 강민혁이 자신의 연구실에서 의식을 잃은 채 발견되었습니다. 강 연구원은 최근 중요한 연구 프로젝트의 실험 데이터를 검토하고 있었으며, 평소 오후마다 노란색 비타민 C 음료를 마시는 습관이 있었습니다.`,
+`현장 단서
 
-사건 현장에서는 겉보기에는 거의 똑같은 두 개의 노란 용액이 발견되었습니다. 또한 누군가는 불이 꺼진 복도를 지나갔으며, 외부에는 공개되지 않은 현장 정보와 관련된 흔적도 확인되었습니다.",
-"결정적 흔적
+사건 현장에서는 겉보기에는 거의 똑같은 두 개의 노란 용액이 발견되었습니다. 또한 누군가는 불이 꺼진 복도를 지나갔으며, 외부에는 공개되지 않은 현장 정보와 관련된 흔적도 확인되었습니다.`,
+`결정적 흔적
 
-피해자의 손톱 아래에서는 소량의 혈액이 발견되었습니다. 현재 연구센터 내부 관계자 6명이 용의선상에 올라 있으며, 이들의 진술과 접근 가능 정보는 서로 다릅니다.",
-"수사 목표
+피해자의 손톱 아래에서는 소량의 혈액이 발견되었습니다. 현재 연구센터 내부 관계자 6명이 용의선상에 올라 있으며, 이들의 진술과 접근 가능 정보는 서로 다릅니다.`,
+`수사 목표
 
-여러분은 화학 반응, 빛의 측정, 생체신호, DNA 분석을 이용해 각 증거를 확인해야 합니다. 어느 한 증거만으로 판단하지 말고, 모든 결과를 종합해 진짜 범인을 찾아내십시오."
+여러분은 화학 반응, 빛의 측정, 생체신호, DNA 분석을 이용해 각 증거를 확인해야 합니다. 어느 한 증거만으로 판단하지 말고, 모든 결과를 종합해 진짜 범인을 찾아내십시오.`
 ];
 const SU=[["김서진","화학실험 담당 연구원","시약실에서 실험 중","화학 시약·실험용 용액","사건 전날 피해자와 실험방법으로 언쟁"],["한도윤","연구보조원","연구실 근처 복도를 지나감","피해자 일정·연구자료·생활습관","최근 데이터 정리 문제로 지적받음"],["윤가람","데이터 분석 연구원","서버실에서 데이터 백업","원본 데이터·분석결과","피해자가 분석 오류를 발견"],["박세린","실험실 안전관리","다른 실험실 안전점검","시약·라텍스 장갑·안전용품","센터 대부분 실험용품 접근 가능"],["최민재","연구센터 인턴","복도에서 피해자 본 뒤 이동","피해자 연구실·준비물","마지막 목격자 중 한 명"],["이채린","장비관리 연구원","다른 층 장비 점검","CCTV·센서·장비기록","사건 직전 CCTV 일부 이상"]];
 const save=()=>localStorage.setItem("c17v3",JSON.stringify(S)); const saves=()=>localStorage.setItem("c17setv3",JSON.stringify(T));
@@ -56,7 +56,10 @@ function sh(id){stopCam();document.querySelectorAll(".scr").forEach(x=>x.classLi
 function toast(x){let e=document.getElementById("toast");e.textContent=x;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),1700)}
 function begin(){let n=document.getElementById("name").value.trim();if(!n)return toast("이름을 입력하세요.");S.agent=n;S.team=team.value;S.size=+size.value;S.start=Date.now();S.brief=0;S.missionSeen=false;save();sh("mission")}
 function startBriefing(){S.missionSeen=true;S.brief=0;save();renderBrief();sh("brief")}
-function renderBrief(){briefBody.innerHTML=BL[S.brief].replaceAll("\\n","<br>");briefCount.textContent=`${S.brief+1} / ${BL.length}`}
+function renderBrief(){
+  briefBody.innerHTML=BL[S.brief].replaceAll("\n","<br>");
+  briefCount.textContent=`${S.brief+1} / ${BL.length}`;
+}
 function briefNext(){if(S.brief<BL.length-1){S.brief++;save();renderBrief()}else{S.sus=0;save();renderSus();sh("sus")}}
 function renderSus(){let x=SU[S.sus];susBody.innerHTML=`<div class="k">SUSPECT #0${S.sus+1}</div><h2>${x[0]}</h2><p class="muted">${x[1]}</p><h3>사건 당시 위치</h3><p>${x[2]}</p><h3>접근 가능 정보</h3><p>${x[3]}</p><h3>수사 메모</h3><p>${x[4]}</p><p class="muted center">${S.sus+1}/6</p>`}
 function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S.sus<5){S.sus++;save();renderSus();return}if(d>0&&S.sus===5)dash()}
@@ -161,7 +164,14 @@ function showApprovalWait(q){
   <button class="btn primary" onclick="teacherApproveOpen()">교사 확인</button>
   <p class="muted center">학생은 이 화면에서 기다리십시오.</p>`;
 }
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"}[m]))}
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 function teacherApproveOpen(){
   resetRequested=false;
   approvalRequested=true;
