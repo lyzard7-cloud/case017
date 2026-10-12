@@ -266,8 +266,8 @@ function showApprovalWait(q){
   document.getElementById("back").disabled=true;
   document.getElementById("next").classList.add("hide");
   body.innerHTML=`<div class="k">QUEST ${q} · TEACHER REVIEW</div>
-  <h2>교사 확인 대기</h2>
-  <p>서술형 답안이 교사용 대시보드로 전송되었습니다.</p>
+  <h2>팀 답안 · 교사 확인 대기</h2>
+  <p>우리 팀의 서술형 답안이 교사용 대시보드로 전송되었습니다. 같은 팀의 모든 요원은 교사 승인 후 동시에 다음 퀘스트로 이동합니다.</p>
   <div class="notice"><b>작성한 답안</b><br>${escapeHtml(S.written[q]||"")}</div>
   <div id="remoteReviewState" class="notice warn">교사의 확인을 기다리고 있습니다...</div>
   <p class="muted center">이 화면을 닫거나 새로고침해도 진행 상태는 저장됩니다.</p>`;
@@ -275,25 +275,49 @@ function showApprovalWait(q){
 function escapeHtml(s){
   return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-function handleTeacherDecision(data){
-  if(!data || !S.pendingApproval) return;
-  const q=S.pendingApproval;
-  if(data.reviewStatus==="approved" && Number(data.reviewQuest)===Number(q)){
+function handleTeamReview(data){
+  if(!data || !S.team || data.team!==S.team) return;
+  const q=Number(data.reviewQuest||0);
+  if(!q || S.done.includes(q)) return;
+  const expected=O[S.team].find(x=>!S.done.includes(x));
+  if(Number(expected)!==q && Number(S.pendingApproval)!==q) return;
+
+  if(data.reviewStatus==="pending"){
+    S.q=q;
+    S.pendingApproval=q;
+    S.reviewStatus="pending";
+    S.teacherFeedback="";
+    if(data.submittedAnswer) S.written[q]=data.submittedAnswer;
+    localStorage.setItem("c17v3",JSON.stringify(S));
+    const qscreen=document.getElementById("quest");
+    if(qscreen && (qscreen.classList.contains("on") || document.getElementById("dash")?.classList.contains("on"))){
+      sh("quest");
+      showApprovalWait(q);
+    }
+  } else if(data.reviewStatus==="approved"){
     if(!S.done.includes(q)) S.done.push(q);
-    S.pendingApproval=null; S.reviewStatus="approved"; S.teacherFeedback=data.teacherFeedback||"";
-    S.q=null; S.st=0; save();
-    toast(`QUEST ${q} 교사 승인 완료`);
-    setTimeout(dash,700);
-  } else if(data.reviewStatus==="rejected" && Number(data.reviewQuest)===Number(q)){
-    S.reviewStatus="rejected"; S.teacherFeedback=data.teacherFeedback||"";
     S.pendingApproval=null;
+    S.reviewStatus="approved";
+    S.teacherFeedback=data.teacherFeedback||"";
+    S.q=null;
+    S.st=0;
+    save();
+    toast(`${S.team}팀 QUEST ${q} 승인 완료 · 팀 전체 다음 퀘스트 해금`);
+    setTimeout(dash,500);
+  } else if(data.reviewStatus==="rejected"){
+    S.q=q;
+    S.reviewStatus="rejected";
+    S.teacherFeedback=data.teacherFeedback||"";
+    S.pendingApproval=null;
+    if(data.submittedAnswer) S.written[q]=data.submittedAnswer;
     S.st=nsteps(q)-1;
     save();
-    renderQ(); sh("quest");
+    renderQ();
+    sh("quest");
     setTimeout(()=>{
       const fb=document.createElement("div");
       fb.className="notice warn";
-      fb.innerHTML="<b>교사 피드백</b><br>"+escapeHtml(S.teacherFeedback||"답안을 보완한 뒤 다시 제출하세요.");
+      fb.innerHTML="<b>팀 답안 반려 · 교사 피드백</b><br>"+escapeHtml(S.teacherFeedback||"과학적 근거를 보완한 뒤 팀에서 다시 제출하세요.");
       document.getElementById("qbody").prepend(fb);
     },50);
   }
@@ -393,6 +417,7 @@ import { getFirestore, doc, setDoc, onSnapshot, serverTimestamp } from "https://
 
 const statusEl = document.getElementById("syncStatus");
 const configured = firebaseConfig && firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("여기에");
+
 if (!configured) {
   statusEl.textContent = "Firebase 설정 필요";
   statusEl.className = "syncbadge bad";
@@ -400,16 +425,45 @@ if (!configured) {
   try {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
     let sid = localStorage.getItem("case017_student_id");
     if (!sid) {
       sid = (crypto.randomUUID ? crypto.randomUUID() : "s-"+Date.now()+"-"+Math.random().toString(36).slice(2));
       localStorage.setItem("case017_student_id", sid);
     }
-    const ref = doc(db, "case017_students", sid);
+
+    const studentRef = doc(db, "case017_students", sid);
+    let teamUnsub = null;
+    let listeningTeam = "";
+
+    function ensureTeamListener(team){
+      if(!team || team===listeningTeam) return;
+      if(teamUnsub) teamUnsub();
+      listeningTeam=team;
+      const teamRef=doc(db,"case017_teams",team);
+      teamUnsub=onSnapshot(teamRef, snap=>{
+        if(!snap.exists()) return;
+        const data=snap.data();
+        if(window.handleTeamReview) window.handleTeamReview(data);
+        statusEl.textContent =
+          data.reviewStatus==="pending" ? `${team}팀 · 교사 승인 대기 중` :
+          data.reviewStatus==="approved" ? `${team}팀 · 승인 완료` :
+          data.reviewStatus==="rejected" ? `${team}팀 · 답안 보완 필요` :
+          `${team}팀 · 실시간 연결됨`;
+        statusEl.className =
+          data.reviewStatus==="pending" ? "syncbadge wait" :
+          data.reviewStatus==="rejected" ? "syncbadge bad" : "syncbadge ok";
+      }, err=>{
+        console.error(err);
+        statusEl.textContent="팀 실시간 연결 오류";
+        statusEl.className="syncbadge bad";
+      });
+    }
 
     window.case017SyncState = async (st) => {
       try {
-        await setDoc(ref, {
+        ensureTeamListener(st.team||"");
+        await setDoc(studentRef, {
           studentId:sid,
           agent:st.agent||"",
           team:st.team||"",
@@ -419,12 +473,13 @@ if (!configured) {
           completed:st.done||st.completed||[],
           pendingApproval:st.pendingApproval||null,
           reviewStatus:st.reviewStatus||"none",
-          reviewQuest:st.pendingApproval||null,
           written:st.written||{},
           lastUpdated:serverTimestamp()
         }, {merge:true});
-        statusEl.textContent = "교사 대시보드와 연결됨";
-        statusEl.className = "syncbadge ok";
+        if((st.reviewStatus||"")!=="pending"){
+          statusEl.textContent = st.team ? `${st.team}팀 · 실시간 연결됨` : "교사 대시보드와 연결됨";
+          statusEl.className = "syncbadge ok";
+        }
       } catch(e) {
         console.error(e);
         statusEl.textContent = "동기화 오류";
@@ -433,7 +488,20 @@ if (!configured) {
     };
 
     window.case017SubmitForReview = async (q, answer, st) => {
-      await setDoc(ref, {
+      ensureTeamListener(st.team||"");
+      const teamRef=doc(db,"case017_teams",st.team);
+      await setDoc(teamRef, {
+        team:st.team,
+        reviewStatus:"pending",
+        reviewQuest:Number(q),
+        submittedAnswer:answer,
+        submittedBy:st.agent||"",
+        teacherFeedback:"",
+        submittedAt:serverTimestamp(),
+        lastUpdated:serverTimestamp()
+      }, {merge:true});
+
+      await setDoc(studentRef, {
         studentId:sid,
         agent:st.agent||"",
         team:st.team||"",
@@ -443,28 +511,17 @@ if (!configured) {
         completed:st.done||[],
         pendingApproval:q,
         reviewStatus:"pending",
-        reviewQuest:q,
-        submittedAnswer:answer,
         written:st.written||{},
-        teacherFeedback:"",
-        submittedAt:serverTimestamp(),
         lastUpdated:serverTimestamp()
       }, {merge:true});
     };
 
-    onSnapshot(ref, snap => {
-      if (!snap.exists()) return;
-      const data=snap.data();
-      statusEl.textContent = data.reviewStatus==="pending" ? "교사 승인 대기 중" : "교사 대시보드와 연결됨";
-      statusEl.className = data.reviewStatus==="pending" ? "syncbadge wait" : "syncbadge ok";
-      if (window.handleTeacherDecision) window.handleTeacherDecision(data);
-    }, err => {
-      console.error(err);
-      statusEl.textContent = "실시간 연결 오류";
-      statusEl.className = "syncbadge bad";
-    });
-
-    if (window.S && S.agent) window.case017SyncState(S);
+    // Recover team listener on refresh without relying on module access to top-level S.
+    const cached=JSON.parse(localStorage.getItem("c17v3")||"null");
+    if(cached?.team){
+      ensureTeamListener(cached.team);
+      if(cached.agent) window.case017SyncState(cached);
+    }
   } catch(e) {
     console.error(e);
     statusEl.textContent = "Firebase 연결 실패";

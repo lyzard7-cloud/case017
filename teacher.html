@@ -11,8 +11,9 @@
 h1{margin:0;font-size:28px}.muted{color:var(--m)}.summary{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:10px;margin:18px 0}
 .stat,.card{background:var(--p);border:1px solid var(--l);border-radius:16px;padding:14px}.stat b{display:block;font-size:28px;color:var(--a)}
 .controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.btn{border:1px solid var(--l);background:#112432;color:var(--t);border-radius:12px;padding:10px 14px;cursor:pointer}.approve{background:#153b29;border-color:#2f7050}.reject{background:#3a1d22;border-color:#74404a}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.card.pending{border-color:#9a7b2a;box-shadow:0 0 0 1px #9a7b2a55}.row{display:flex;justify-content:space-between;gap:10px}.badge{font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid var(--l)}.badge.pending{color:var(--w)}.badge.approved{color:var(--ok)}.badge.rejected{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}.card.pending{border-color:#9a7b2a;box-shadow:0 0 0 1px #9a7b2a55}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.badge{font-size:11px;padding:5px 8px;border-radius:999px;border:1px solid var(--l)}.badge.pending{color:var(--w)}.badge.approved{color:var(--ok)}.badge.rejected{color:var(--bad)}
 .answer{white-space:pre-wrap;background:#08131b;border:1px solid var(--l);border-radius:12px;padding:11px;min-height:74px;margin:10px 0;line-height:1.55}
+.members{font-size:13px;line-height:1.6;color:#cbd8de;margin:8px 0}.teamletter{font-size:26px;color:var(--a)}
 textarea,input{width:100%;background:#08131b;color:var(--t);border:1px solid var(--l);border-radius:11px;padding:10px;font:inherit}textarea{min-height:70px;resize:vertical}.hidden{display:none}
 @media(max-width:800px){.summary{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -29,16 +30,22 @@ textarea,input{width:100%;background:#08131b;color:var(--t);border:1px solid var
 <div id="dashboard" class="hidden">
 <div class="summary">
 <div class="stat"><span class="muted">접속 학생</span><b id="sTotal">0</b></div>
-<div class="stat"><span class="muted">승인 대기</span><b id="sPending">0</b></div>
-<div class="stat"><span class="muted">Q1</span><b id="sQ1">0</b></div>
-<div class="stat"><span class="muted">Q2</span><b id="sQ2">0</b></div>
-<div class="stat"><span class="muted">Q3</span><b id="sQ3">0</b></div>
-<div class="stat"><span class="muted">Q4</span><b id="sQ4">0</b></div>
+<div class="stat"><span class="muted">승인 대기 팀</span><b id="sPending">0</b></div>
+<div class="stat"><span class="muted">Q1 진행</span><b id="sQ1">0</b></div>
+<div class="stat"><span class="muted">Q2 진행</span><b id="sQ2">0</b></div>
+<div class="stat"><span class="muted">Q3 진행</span><b id="sQ3">0</b></div>
+<div class="stat"><span class="muted">Q4 진행</span><b id="sQ4">0</b></div>
 </div>
-<div class="controls"><button class="btn" onclick="setFilter('all')">전체</button><button class="btn" onclick="setFilter('pending')">승인 대기만</button><button class="btn" onclick="setFilter('A')">A팀</button><button class="btn" onclick="setFilter('B')">B팀</button><button class="btn" onclick="setFilter('C')">C팀</button><button class="btn" onclick="setFilter('D')">D팀</button></div>
-<div id="students" class="grid"></div>
+<div class="controls">
+<button class="btn" onclick="setFilter('all')">전체 팀</button>
+<button class="btn" onclick="setFilter('pending')">승인 대기만</button>
+<button class="btn" onclick="setFilter('A')">A팀</button><button class="btn" onclick="setFilter('B')">B팀</button>
+<button class="btn" onclick="setFilter('C')">C팀</button><button class="btn" onclick="setFilter('D')">D팀</button>
+</div>
+<div id="teams" class="grid"></div>
 </div>
 </div>
+
 <script>
 function teacherLogin(){
   if(document.getElementById("pin").value!=="017"){alert("PIN이 올바르지 않습니다.");return}
@@ -47,59 +54,125 @@ function teacherLogin(){
   window.startTeacherDashboard?.();
 }
 </script>
+
 <script type="module">
 import { firebaseConfig } from "./firebase-config.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getFirestore, collection, doc, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-let all=[], filter="all", started=false, unsub=null;
+let students=[], teams=[], filter="all", started=false;
 const conn=document.getElementById("conn");
 const configured=firebaseConfig?.apiKey && !firebaseConfig.apiKey.includes("여기에");
-if(!configured){conn.textContent="firebase-config.js 설정 필요";}
+if(!configured) conn.textContent="firebase-config.js 설정 필요";
 
 window.startTeacherDashboard=()=>{
   if(started||!configured)return;
   started=true;
-  const app=initializeApp(firebaseConfig); const db=getFirestore(app);
-  conn.textContent="실시간 연결됨";
-  unsub=onSnapshot(collection(db,"case017_students"),snap=>{
-    all=snap.docs.map(d=>({id:d.id,...d.data()}));
-    render();
-  },e=>{console.error(e);conn.textContent="Firestore 연결 오류";});
+  const app=initializeApp(firebaseConfig);
+  const db=getFirestore(app);
   window.case017db=db;
+  conn.textContent="실시간 연결됨";
+
+  onSnapshot(collection(db,"case017_students"),snap=>{
+    students=snap.docs.map(d=>({id:d.id,...d.data()}));
+    render();
+  },e=>{console.error(e);conn.textContent="학생 데이터 연결 오류";});
+
+  onSnapshot(collection(db,"case017_teams"),snap=>{
+    teams=snap.docs.map(d=>({id:d.id,...d.data()}));
+    render();
+  },e=>{console.error(e);conn.textContent="팀 데이터 연결 오류";});
 };
+
 window.setFilter=(f)=>{filter=f;render()};
 
-function render(){
-  const now=[...all].sort((a,b)=>{
-    const pa=a.reviewStatus==="pending"?0:1, pb=b.reviewStatus==="pending"?0:1;
-    if(pa!==pb)return pa-pb;
-    return String(a.team||"").localeCompare(String(b.team||"")) || String(a.agent||"").localeCompare(String(b.agent||""));
-  });
-  document.getElementById("sTotal").textContent=all.length;
-  document.getElementById("sPending").textContent=all.filter(x=>x.reviewStatus==="pending").length;
-  [1,2,3,4].forEach(q=>document.getElementById("sQ"+q).textContent=all.filter(x=>Number(x.currentQuest)===q).length);
-  let arr=now.filter(x=>filter==="all"||filter==="pending"&&x.reviewStatus==="pending"||x.team===filter);
-  document.getElementById("students").innerHTML=arr.map(card).join("");
+function esc(s=""){
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
 }
-function esc(s=""){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
-function card(s){
-  const status=s.reviewStatus||"none", q=s.currentQuest||"-", done=(s.completed||[]).join(", ")||"없음";
+function members(team){
+  return students
+    .filter(s=>s.team===team)
+    .sort((a,b)=>String(a.agent||"").localeCompare(String(b.agent||"")))
+    .map(s=>s.agent||"이름없음");
+}
+function teamCurrentQuest(team){
+  const ss=students.filter(s=>s.team===team && s.currentQuest);
+  if(!ss.length)return "-";
+  const counts={};
+  ss.forEach(s=>counts[s.currentQuest]=(counts[s.currentQuest]||0)+1);
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+}
+function render(){
+  document.getElementById("sTotal").textContent=students.length;
+  document.getElementById("sPending").textContent=teams.filter(t=>t.reviewStatus==="pending").length;
+  [1,2,3,4].forEach(q=>{
+    document.getElementById("sQ"+q).textContent=students.filter(s=>Number(s.currentQuest)===q).length;
+  });
+
+  const letters=["A","B","C","D"];
+  let display=letters.map(letter=>{
+    const td=teams.find(t=>t.team===letter)||{team:letter,reviewStatus:"none"};
+    return td;
+  });
+
+  display.sort((a,b)=>{
+    const pa=a.reviewStatus==="pending"?0:1, pb=b.reviewStatus==="pending"?0:1;
+    return pa-pb || a.team.localeCompare(b.team);
+  });
+
+  display=display.filter(t=>
+    filter==="all" ||
+    (filter==="pending" && t.reviewStatus==="pending") ||
+    t.team===filter
+  );
+
+  document.getElementById("teams").innerHTML=display.map(card).join("");
+}
+
+function card(t){
+  const m=members(t.team);
+  const status=t.reviewStatus||"none";
+  const q=t.reviewQuest||teamCurrentQuest(t.team);
+  const statusText=status==="pending"?"승인 대기":status==="approved"?"승인 완료":status==="rejected"?"반려":"진행 중";
   return `<div class="card ${status==="pending"?"pending":""}">
-    <div class="row"><div><b>${esc(s.agent||"이름없음")}</b> <span class="badge">${esc(s.team||"-")}팀</span></div><span class="badge ${status}">${status==="pending"?"승인 대기":status==="approved"?"승인":status==="rejected"?"반려":"진행중"}</span></div>
-    <p class="muted">현재 Q${q} · 완료: ${done}</p>
-    ${status==="pending"?`<div class="answer">${esc(s.submittedAnswer||"")}</div>
-    <textarea id="fb-${s.id}" placeholder="반려 시 피드백 (선택)"></textarea>
-    <div class="row" style="margin-top:9px"><button class="btn approve" onclick="approve('${s.id}',${Number(s.reviewQuest||q)})">통과</button><button class="btn reject" onclick="rejectStudent('${s.id}',${Number(s.reviewQuest||q)})">반려</button></div>`:""}
+    <div class="row">
+      <div><span class="teamletter">${esc(t.team)}팀</span><div class="members">${m.length?esc(m.join(" · ")):"접속 학생 없음"}</div></div>
+      <span class="badge ${status}">${statusText}</span>
+    </div>
+    <p class="muted">현재/검토 퀘스트: Q${esc(q)}</p>
+    ${status==="pending"?`
+      <div class="muted">제출자: ${esc(t.submittedBy||"팀원")}</div>
+      <div class="answer">${esc(t.submittedAnswer||"")}</div>
+      <textarea id="fb-${t.team}" placeholder="반려 시 팀 전체에게 보낼 피드백 (선택)"></textarea>
+      <div class="row" style="margin-top:9px">
+        <button class="btn approve" onclick="approveTeam('${t.team}',${Number(t.reviewQuest||0)})">팀 전체 통과</button>
+        <button class="btn reject" onclick="rejectTeam('${t.team}',${Number(t.reviewQuest||0)})">팀 전체 반려</button>
+      </div>`:
+      `<div class="muted">${m.length}명 접속 · 답안 제출 시 이 카드에 표시됩니다.</div>`}
   </div>`;
 }
-window.approve=async(id,q)=>{
-  const db=window.case017db;if(!db)return;
-  await updateDoc(doc(db,"case017_students",id),{reviewStatus:"approved",reviewQuest:q,teacherFeedback:"",reviewedAt:serverTimestamp(),lastUpdated:serverTimestamp()});
+
+window.approveTeam=async(team,q)=>{
+  const db=window.case017db;if(!db||!q)return;
+  await updateDoc(doc(db,"case017_teams",team),{
+    reviewStatus:"approved",
+    reviewQuest:q,
+    teacherFeedback:"",
+    reviewedAt:serverTimestamp(),
+    lastUpdated:serverTimestamp()
+  });
 };
-window.rejectStudent=async(id,q)=>{
-  const db=window.case017db;if(!db)return;
-  const fb=document.getElementById("fb-"+id)?.value.trim()||"과학적 근거를 보완한 뒤 다시 제출하세요.";
-  await updateDoc(doc(db,"case017_students",id),{reviewStatus:"rejected",reviewQuest:q,teacherFeedback:fb,reviewedAt:serverTimestamp(),lastUpdated:serverTimestamp()});
+
+window.rejectTeam=async(team,q)=>{
+  const db=window.case017db;if(!db||!q)return;
+  const fb=document.getElementById("fb-"+team)?.value.trim()||"과학적 근거를 보완한 뒤 팀에서 다시 제출하세요.";
+  await updateDoc(doc(db,"case017_teams",team),{
+    reviewStatus:"rejected",
+    reviewQuest:q,
+    teacherFeedback:fb,
+    reviewedAt:serverTimestamp(),
+    lastUpdated:serverTimestamp()
+  });
 };
-</script></body></html>
+</script>
+</body></html>
