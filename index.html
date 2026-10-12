@@ -45,7 +45,7 @@
 <section id="final" class="scr"><div class="card center"><div style="font-size:70px;color:var(--ok)">✓</div><div class="k">FINAL EVIDENCE FOUND</div><h1>CASE CLOSED</h1><p>강일 심화과학반 특별수사팀의 최종 임무가 완료되었습니다.</p><div class="notice ok">추측이 아니라 증거로 판단하라.</div></div></section>
 </div><div class="hot" onclick="teacher(false)"></div><div id="modal" class="modal"><div class="sheet"><div class="k">TEACHER CONTROL</div><h2>교사용 설정</h2><div id="teacherLoginBox"><div class="field"><label>PIN</label><input id="pin" type="password"></div><button class="btn primary" onclick="teacherLoginFn()">열기</button><button class="btn ghost" onclick="closeT()">닫기</button></div><div id="panel" class="hide"><div class="field"><label>Q1 비타민 C 정답</label><select id="tq1"><option>A</option><option>B</option></select></div><div class="field"><label>Q2 사건 기준 밝기</label><input id="tl"></div><div class="field"><label>Q2 정답 장소</label><select id="tq2"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="field"><label>장소 A~D 이름 (쉼표 구분)</label><input id="tpl"></div><div class="field"><label>w3w</label><input id="tw"></div><div class="field"><label>NFC URL</label><input id="nfc" readonly></div><button class="btn primary" onclick="saveT()">저장</button><button class="btn ghost" onclick="resetAll()">진행기록 초기화</button></div></div></div><div id="toast" class="toast"></div>
 <script>
-const D={pin:"017",q1:"A",q2:"C",light:"38",places:["장소 A","장소 B","장소 C","장소 D"],w3w:""};
+const D={pin:"017",q1:"A",q2:"C",light:"38",places:["장소 A","장소 B","장소 C","장소 D"],w3w:"취업.비옷.아꼈다"};
 let S=JSON.parse(localStorage.getItem("c17v3")||"null")||{agent:"",team:"A",size:4,start:0,brief:0,sus:0,done:[],q:null,st:0,a:{},q1:{},q2:{p:{}},q3:{},q4:{},written:{},pendingApproval:null};if(!S.written)S.written={};if(S.pendingApproval===undefined)S.pendingApproval=null;
 let T=JSON.parse(localStorage.getItem("c17setv3")||"null")||D;
 const O={A:[1,2,3,4],B:[2,3,4,1],C:[3,4,1,2],D:[4,1,2,3]};
@@ -830,7 +830,7 @@ function openQ5(){
   S.q=5;
   S.st=0;
   save();
-  w3w.textContent=T.w3w||"좌표 미등록";
+  w3w.textContent="///"+(T.w3w||"취업.비옷.아꼈다").replace(/^\/{3}/,"");
   sh("q5");
 }
 function field(){
