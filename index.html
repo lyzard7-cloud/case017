@@ -100,7 +100,7 @@ function renderSus(){let x=SU[S.sus];susBody.innerHTML=`<div class="k">SUSPECT #
 function susMove(d){if(d<0&&S.sus>0){S.sus--;save();renderSus();return}if(d>0&&S.sus<5){S.sus++;save();renderSus();return}if(d>0&&S.sus===5)dash()}
 function dash(){S.q=null;S.st=0;save();teamTxt.textContent=S.team;prog.textContent=`${S.agent} · ${S.done.length}/4 완료`;let cur=O[S.team].find(x=>!S.done.includes(x));qlist.innerHTML="";O[S.team].forEach(q=>{let done=S.done.includes(q),open=q===cur,e=document.createElement("div");e.className="quest "+(done?"done":open?"":"lock");e.innerHTML=`<div class="num">Q${q}</div><div><div>${QT[q][0]}</div><div class="muted">${QT[q][1]}</div></div>`;if(done||open)e.onclick=()=>openQ(q);qlist.appendChild(e)});finalBtn.disabled=S.done.length<4;sh("dash")}
 function openQ(q){S.q=q;S.st=0;save();renderQ();sh("quest")}
-function nsteps(q){return {1:10,2:10,3:8,4:9}[q]}
+function nsteps(q){return {1:10,2:6,3:8,4:9}[q]}
 function renderBar(){stepbar.innerHTML="";for(let i=0;i<nsteps(S.q);i++){let e=document.createElement("div");e.className="dot "+(i<S.st?"done":i===S.st?"now":"");e.textContent=i+1;stepbar.appendChild(e)}back.classList.remove("hide");next.classList.remove("hide");back.disabled=S.st===0;next.disabled=false;next.textContent=S.st===nsteps(S.q)-1?"서술형 답안 제출":"다음 →"}
 function step(d){
 if(d<0){S.st=Math.max(0,S.st-1);save();renderQ();return}
@@ -128,16 +128,87 @@ if(s===8)h+=`<h2>RGB 결과 해석</h2><p>앞 단계에서 시료 A와 B의 색�
 if(s===9)h+=`<h2>최종 증거 판단</h2><p>육안 관찰 결과와 RGB 분석 결과를 근거로, 어느 시료가 실제 비타민 C 음료라고 판단하는지 서술하십시오.</p><div class="notice">반드시 <b>선택한 시료(A 또는 B)</b>와 <b>그렇게 판단한 과학적 근거</b>를 함께 작성하십시오.</div><textarea id="writtenQ1" placeholder="예: 시료 ___가 실제 비타민 C 음료라고 판단한다. 그 이유는 ...">${S.written[1]||""}</textarea><button class="btn" onclick="saveWritten(1,'writtenQ1')">답안 임시 저장</button><div class="notice warn">답안을 제출해도 다음 퀘스트는 자동으로 열리지 않습니다. 교사의 확인과 허용이 필요합니다.</div>`;
 qbody.innerHTML=h}
 function fr(x){return x?`${x.r},${x.g},${x.b}`:"미측정"}function rgbSave(k){if(!stream)return toast("카메라를 먼저 시작하세요.");S.q1[k]={...RGB};save();toast("저장 완료");renderQ()}function delta(a,b){return a&&b?Math.round(Math.hypot(a.r-b.r,a.g-b.g,a.b-b.b)):null}function count20(){let t=20,e=document.getElementById("tm"),iv=setInterval(()=>{e.textContent=--t;if(t<=0){clearInterval(iv);e.textContent="완료"}},1000)}
-function q2(){let s=S.st,h=`<div class="k">QUEST 2 · ${s+1}/10</div>`;
-if(s===0)h+=`<h2>어두운 복도의 진술</h2><div class="notice">한도윤: “연구실 근처를 지나간 건 맞습니다. 하지만 당시 복도 조명이 꺼져 있어서 표지판도 제대로 보이지 않았습니다.”</div><p>사건 당시 상대 밝기 지수는 약 ${T.light} 부근으로 추정됩니다.</p>`;
-if(s===1)h+=`<h2>먼저 예측</h2><p>사건 당시와 가장 비슷할 것으로 예상되는 장소는?</p>${opts("q2pred",T.places)}<button class="btn" onclick="S.q2.pred=S.a.q2pred;save();toast('예측 저장')">예측 저장</button>`;
-if(s===2)h+=`<h2>센서의 한계</h2><p>같은 장소에서 휴대폰마다 값이 다를 수 있는 가장 큰 이유는?</p>${opts("q2sens",["카메라 센서와 자동노출 특성이 다르기 때문","빛의 속도가 휴대폰마다 다르기 때문"])}<button class="btn" onclick="if(S.a.q2sens==='0'){S.q2.sensor=1;save();toast('확인')}else toast('다시 생각하세요')">확인</button>`;
-if(s>=3&&s<=6){let k=["A","B","C","D"][s-3],i=s-3;h+=`<h2>LOCATION ${k}</h2><p>${T.places[i]}</p><button class="btn" onclick="cam('cam')">광센서 시작</button>${cm()}<div class="field"><label>표지판 식별</label><select id="vis"><option value="">선택</option><option>선명하게 읽음</option><option>일부 식별</option><option>식별 어려움</option></select></div><button class="btn primary" onclick="placeSave('${k}')">현재 장소 저장</button>`}
-if(s===7){let rows=["A","B","C","D"].map((k,i)=>{let p=S.q2.p[k]||{};return `<tr><td>${k}</td><td>${T.places[i]}</td><td>${p.l??"-"}</td><td>${p.l!=null?Math.abs(p.l-(+T.light)):"-"}</td><td>${p.v||"-"}</td></tr>`}).join("");h+=`<h2>데이터 비교</h2><div class="matrix"><table><tr><th>장소</th><th>이름</th><th>밝기</th><th>기준차</th><th>표지판</th></tr>${rows}</table></div><p>사건 기준에 가장 가까운 장소는?</p>${opts("q2match",["A","B","C","D"])}<button class="btn" onclick="S.q2.match=['A','B','C','D'][+S.a.q2match];save();toast('비교 저장')">선택 저장</button>`}
-if(s===8)h+=`<h2>증거의 한계</h2><p>비슷한 밝기에서 표지판이 보였다고 해서 거짓말을 확정할 수 있을까요?</p>${opts("q2lim",["반드시 거짓말이다","진술과 실험 결과가 일치하지 않는 정도만 말할 수 있다"])}<button class="btn" onclick="if(S.a.q2lim==='1'){S.q2.limit=1;save();toast('한계 확인')}else toast('단정 범위를 생각하세요')">확인</button>`;
-if(s===9)h+=`<h2>최종 증거 판단</h2><p>장소 A~D의 밝기 측정 결과와 표지판 식별 결과를 근거로, 한도윤의 진술을 어떻게 평가할 수 있는지 서술하십시오.</p><div class="notice">“범인이다/거짓말이다”라고 단정하기보다, 이번 측정으로 <b>확인할 수 있는 범위</b>까지 작성하십시오.</div><textarea id="writtenQ2" placeholder="측정 결과를 종합하면 ...">${S.written[2]||""}</textarea><button class="btn" onclick="saveWritten(2,'writtenQ2')">답안 임시 저장</button><div class="notice warn">답안 제출 후 교사의 확인을 받아야 다음 퀘스트가 열립니다.</div>`;
-qbody.innerHTML=h}
-function placeSave(k){if(!stream)return toast("광센서를 먼저 시작하세요.");let v=document.getElementById("vis").value;if(!v)return toast("표지판 식별을 선택하세요.");S.q2.p[k]={l:RGB.l,v};save();toast("저장 완료")}
+function q2(){
+let s=S.st,h=`<div class="k">QUEST 2 · ${s+1}/6</div>`;
+
+if(s===0)h+=`
+<h2>화학약품실 앞, 한도윤의 진술</h2>
+<div class="notice">한도윤: “연구실 근처를 지나간 건 맞습니다. 하지만 당시 복도 조명이 꺼져 있어서 표지판도 제대로 보이지 않았습니다.”</div>
+<p>수사팀은 한도윤이 지나갔다고 진술한 복도에서 <b>‘화학약품실’ 표지판</b>의 가시성을 조사합니다.</p>
+<p>화학약품실 표지판을 바라볼 수 있는 약 3 m 거리의 서로 다른 지점 세 곳에서 스마트폰 카메라를 이용해 상대 밝기를 측정하십시오.</p>
+<div class="notice warn">이번 퀘스트의 목적은 “범인을 바로 찾는 것”이 아니라, 실제 현장 조건과 한도윤의 진술이 얼마나 일치하는지 판단하는 것입니다.</div>`;
+
+if(s===1)h+=`
+<h2>현장 측정 방법</h2>
+<p>세 지점의 조건을 최대한 비슷하게 맞추어야 비교가 의미가 있습니다.</p>
+<div class="notice">
+① 모든 지점에서 <b>화학약품실 표지판까지 약 3 m</b> 거리를 유지합니다.<br>
+② 같은 스마트폰을 사용합니다.<br>
+③ 스마트폰 카메라가 화학약품실 표지판을 향하도록 합니다.<br>
+④ 측정 중 복도 조명 상태를 임의로 바꾸지 않습니다.<br>
+⑤ 각 지점에서 밝기값과 실제 표지판 식별 정도를 기록합니다.
+</div>
+<p class="muted">측정값은 전문 조도계의 lux 값이 아니라 스마트폰 카메라에서 얻은 상대 밝기 지수입니다.</p>`;
+
+if(s>=2&&s<=4){
+  let k=["A","B","C"][s-2];
+  h+=`
+  <h2>측정 지점 ${k}</h2>
+  <p><b>‘화학약품실’ 표지판으로부터 약 3 m 떨어진 측정 지점 ${k}</b>로 이동하십시오.</p>
+  <p>표지판을 바라본 상태에서 카메라를 켜고 밝기 지수가 안정되면 기록합니다.</p>
+  <button class="btn" onclick="cam('cam')">밝기 측정 시작</button>
+  ${cm()}
+  <div class="field">
+    <label>이 지점에서 ‘화학약품실’ 글자를 실제로 어느 정도 식별할 수 있었습니까?</label>
+    <select id="vis">
+      <option value="">선택</option>
+      <option>선명하게 읽을 수 있었다</option>
+      <option>일부 글자만 식별할 수 있었다</option>
+      <option>식별하기 어려웠다</option>
+    </select>
+  </div>
+  <button class="btn primary" onclick="placeSave('${k}')">측정 지점 ${k} 기록 저장</button>
+  <p class="muted">저장값: ${S.q2.p[k] ? `밝기 ${S.q2.p[k].l} / ${S.q2.p[k].v}` : "아직 기록되지 않음"}</p>`;
+}
+
+if(s===5){
+  let rows=["A","B","C"].map(k=>{
+    let p=S.q2.p[k]||{};
+    return `<tr><td>${k}</td><td>약 3 m</td><td>${p.l??"-"}</td><td>${p.v||"-"}</td></tr>`;
+  }).join("");
+  h+=`
+  <h2>측정 결과를 바탕으로 진술을 평가하십시오</h2>
+  <p>세 지점에서 얻은 결과를 한 번에 비교하십시오.</p>
+  <div class="matrix">
+    <table>
+      <tr><th>측정 지점</th><th>표지판 거리</th><th>밝기 지수</th><th>화학약품실 표지판 식별</th></tr>
+      ${rows}
+    </table>
+  </div>
+  <div class="notice">
+  한도윤은 “복도 조명이 꺼져 있어서 표지판도 제대로 보이지 않았다”고 진술했습니다.<br>
+  여러분이 실제로 측정한 밝기값과 ‘화학약품실’ 표지판 식별 결과를 근거로 이 진술을 평가하십시오.
+  </div>
+  <p>한도윤의 진술을 어떻게 생각합니까? <b>세 지점의 측정 결과를 최소 한 가지 이상 구체적으로 인용하여</b> 서술하십시오.</p>
+  <textarea id="writtenQ2" placeholder="예: 측정 지점 A, B, C의 밝기 지수는 각각 ...였고, 실제로 화학약품실 표지판은 ... 따라서 한도윤의 진술은 ...라고 판단한다.">${S.written[2]||""}</textarea>
+  <button class="btn" onclick="saveWritten(2,'writtenQ2')">답안 임시 저장</button>
+  <div class="notice warn">이 결과만으로 한도윤이 범인이라고 단정할 수는 없습니다. 측정 결과와 진술의 일치 여부를 중심으로 작성하십시오.</div>
+  <div class="notice warn">답안을 제출하면 교사용 대시보드로 전송되며, 교사가 확인·승인해야 다음 퀘스트가 열립니다.</div>`;
+}
+
+qbody.innerHTML=h
+}
+
+function placeSave(k){
+  if(!stream)return toast("밝기 측정을 먼저 시작하세요.");
+  let v=document.getElementById("vis").value;
+  if(!v)return toast("화학약품실 표지판 식별 정도를 선택하세요.");
+  S.q2.p[k]={l:RGB.l,v:v};
+  save();
+  toast(`측정 지점 ${k} 저장 완료`);
+  renderQ();
+}
+
 function q3(){let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/8</div>`;
 if(s===0)h+=`<h2>피실험자를 정하십시오</h2><p>한 명은 피실험자, 나머지는 측정·진행·기록 역할을 맡습니다.</p>`;
 if(s===1)h+=`<h2>피실험자만 화면을 보십시오</h2><p>다른 팀원은 시선을 돌리십시오.</p><div id="secret" class="stim">${S.q3.secret?"확인 완료":"준비"}</div><button class="btn primary" onclick="secret()">비밀 단어 확인</button>`;
@@ -166,7 +237,7 @@ qbody.innerHTML=h}
 function assignHtml(){let n=S.size,A=n===4?[["요원 A","1,2"],["요원 B","3"],["요원 C","4,5"],["요원 D","6"]]:n===3?[["요원 A","1,2"],["요원 B","3,4"],["요원 C","5,6"]]:[["요원 A","1,2,3"],["요원 B","4,5,6"]];return A.map(x=>`<div class="notice"><b>${x[0]}</b><br>용의자 #${x[1].replaceAll(","," · #")}</div>`).join("")}
 function filesHtml(d,n,ref){return assignHtml()+[1,2,3,4,5,6].map(i=>`<p><span class="k">#${i} ${n[i]}</span><br>이동거리: ${d[i].join(" · ")} cm</p>`).join("")+ref}
 function valid(){let q=S.q,s=S.st;if(q===1){if(s===2&&(!S.q1.preA||!S.q1.preB))return toast("A·B 반응 전 RGB를 모두 저장하세요."),0;if(s===3&&!S.q1.ctrl)return toast("변인 통제를 해결하세요."),0;if(s===6&&!S.q1.obs)return toast("육안 관찰을 저장하세요."),0;if(s===7&&(!S.q1.postA||!S.q1.postB))return toast("A·B 반응 후 RGB를 모두 저장하세요."),0;if(s===8&&!S.q1.reason)return toast("결과 해석을 완료하세요."),0;if(s===9&&((S.written[1]||"").trim().length<10))return toast("시료와 과학적 근거를 서술형으로 작성하세요."),0}
-if(q===2){if(s===1&&!S.q2.pred)return toast("예측을 저장하세요."),0;if(s===2&&!S.q2.sensor)return toast("센서 특성을 확인하세요."),0;if(s>=3&&s<=6&&!S.q2.p[["A","B","C","D"][s-3]])return toast("현재 장소를 저장하세요."),0;if(s===7&&!S.q2.match)return toast("사건 조건과 가까운 장소를 선택하세요."),0;if(s===8&&!S.q2.limit)return toast("증거의 한계를 확인하세요."),0;if(s===9&&((S.written[2]||"").trim().length<10))return toast("측정 결과와 진술 평가를 서술형으로 작성하세요."),0}
+if(q===2){if(s>=2&&s<=4&&!S.q2.p[["A","B","C"][s-2]])return toast("현재 측정 지점의 밝기와 표지판 관찰 결과를 저장하세요."),0;if(s===5&&((S.written[2]||"").trim().length<20))return toast("세 지점의 측정 결과를 근거로 20자 이상 서술하세요."),0}
 if(q===3){if(s===1&&!S.q3.secret)return toast("비밀 단어를 확인하세요."),0;if(s===3&&!S.q3.base)return toast("기준 측정을 완료하세요."),0;if(s===4&&!S.q3.test)return toast("자극 테스트를 완료하세요."),0;if(s===5&&!S.q3.review)return toast("결과를 검토하세요."),0;if(s===7&&((S.written[3]||"").trim().length<10))return toast("생체신호 결과의 의미와 한계를 서술하세요."),0}
 if(q===4){if(s===0&&!S.q4.p)return toast("원리를 확인하세요."),0;if(s===1&&!S.q4.scene)return toast("현장 DNA를 해독하세요."),0;if(s===3&&!S.q4.dec)return toast("개별 해독을 완료하세요."),0;if(s===5&&!S.q4.table)return toast("비교표를 확인하세요."),0;if(s===6&&!S.q4.trap)return toast("4/5 문제를 해결하세요."),0;if(s===7&&!S.q4.why)return toast("증거 해석을 완료하세요."),0;if(s===8&&((S.written[4]||"").trim().length<10))return toast("DNA 일치 용의자와 근거를 서술형으로 작성하세요."),0}return 1}
 
