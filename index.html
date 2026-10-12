@@ -306,94 +306,401 @@ function placeSave(k){
   renderQ();
 }
 
+
 function q3(){
-let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/9</div>`;
+  let s=S.st,h=`<div class="k">QUEST 3 · ${s+1}/9</div>`;
 
-if(s===0)h+=`
-<h2>생체신호 분석 임무</h2>
-<p>이번 퀘스트에서는 스마트폰 카메라와 플래시를 이용한 <b>PPG(광용적맥파)</b> 원리를 체험한 뒤, 한도윤의 가상 생체신호 기록을 해석합니다.</p>
-<div class="notice">PPG 반응만으로 거짓말 여부를 판정할 수는 없습니다. 의미 있는 자극에 대한 생리적 변화 가능성을 살펴보는 활동입니다.</div>
-<p>먼저 팀원 중 한 명을 피실험자로 정하십시오.</p>`;
+  if(s===0)h+=`
+  <h2>생체신호 분석 임무</h2>
+  <p>이번 퀘스트에서는 스마트폰의 <b>후면 카메라와 플래시</b>를 이용해 손가락 끝의 혈류 변화를 감지하는 PPG(광용적맥파) 방식으로 맥박을 측정합니다.</p>
+  <div class="notice">카메라는 사진을 찍는 것이 아니라, 손가락을 통과·반사하는 빛의 미세한 밝기 변화를 연속으로 읽어 맥박 주기를 추정합니다.</div>
+  <div class="notice warn">교육용 간이 측정입니다. 의료기기 수준의 심박수 측정이나 거짓말 판별 용도로 사용할 수 없습니다.</div>
+  <p>팀원 중 한 명을 피실험자로 정하십시오.</p>`;
 
-if(s===1)h+=`
-<h2>피실험자만 화면을 보십시오</h2>
-<div class="notice warn">아직 비밀 단어는 표시되지 않습니다.</div>
-<p>피실험자 한 명만 스마트폰을 들고 화면을 볼 준비를 하십시오.</p>
-<p>나머지 팀원은 화면에서 시선을 돌리거나 뒤를 돌아 <b>비밀 단어를 볼 수 없는 상태</b>를 만들어야 합니다.</p>
-<div class="notice">모두 준비되었다면 피실험자만 아래 버튼을 누르십시오.</div>
-<button class="btn primary" onclick="revealSecretWord()">피실험자만 비밀 단어 확인</button>
-<div id="secretBox"></div>`;
+  if(s===1)h+=`
+  <h2>피실험자만 화면을 보십시오</h2>
+  <div class="notice warn">아직 비밀 단어는 표시되지 않습니다.</div>
+  <p>피실험자 한 명만 스마트폰을 들고 화면을 볼 준비를 하십시오.</p>
+  <p>나머지 팀원은 뒤를 돌거나 시선을 다른 곳으로 옮겨 <b>비밀 단어를 볼 수 없는 상태</b>를 만드십시오.</p>
+  <div class="notice">모두 준비되었다면 피실험자만 아래 버튼을 누르십시오.</div>
+  <button class="btn primary" onclick="revealSecretWord()">피실험자만 비밀 단어 확인</button>
+  <div id="secretBox"></div>`;
 
-if(s===2)h+=`
-<h2>PPG 측정 원리</h2>
-<p>손가락을 카메라 렌즈와 플래시 위에 가볍게 올리면 혈액량 변화에 따라 영상의 밝기 신호가 미세하게 달라질 수 있습니다.</p>
-<p>이번 활동에서는 특정 단어를 보았을 때 나타나는 변화 가능성을 관찰하지만, 이러한 변화는 긴장·움직임·주의집중 등 여러 요인의 영향을 받을 수 있습니다.</p>
-<div class="notice">따라서 “반응이 크다 = 거짓말”로 해석해서는 안 됩니다.</div>`;
+  if(s===2)h+=`
+  <h2>PPG 측정 원리</h2>
+  <p>심장이 뛸 때마다 손가락 끝 혈관의 혈액량이 조금씩 변합니다. 손가락을 카메라 렌즈와 플래시 위에 가볍게 올리면 카메라 영상의 밝기도 주기적으로 미세하게 변합니다.</p>
+  <div class="notice">
+  혈액량 변화 → 카메라 밝기 변화 → 반복되는 파형의 간격 계산 → 분당 맥박수(BPM) 추정
+  </div>
+  <p>측정할 때는 손가락으로 <b>후면 카메라 렌즈와 플래시를 함께 덮고</b>, 너무 세게 누르지 말고 움직이지 마십시오.</p>`;
 
-if(s===3)h+=`
-<h2>기준 신호 측정</h2>
-<p>피실험자는 손가락을 카메라와 플래시 위에 올리고 약 10초 동안 편안히 유지하십시오.</p>
-<button class="btn" onclick="cam('cam',true)">카메라 측정 시작</button>
-${cm()}
-<div class="notice">측정값이 안정되면 다음 단계로 이동하십시오.</div>`;
+  if(s===3)h+=`
+  <h2>기준 심박수 측정</h2>
+  <p>피실험자는 편안한 상태에서 손가락으로 후면 카메라와 플래시를 덮으십시오. 약 <b>15초 동안</b> 기준 심박수를 측정합니다.</p>
+  ${ppgView()}
+  <button id="baseBtn" class="btn primary" onclick="startBaselinePPG()">15초 기준 심박수 측정 시작</button>
+  <div id="ppgMsg" class="notice">버튼을 누른 뒤 손가락을 움직이지 마십시오.</div>
+  ${S.q3.base?.bpm ? `<div class="notice"><b>저장된 기준 심박수: ${S.q3.base.bpm} BPM</b></div>` : ""}`;
 
-if(s===4)h+=`
-<h2>단어 자극 테스트</h2>
-<p>이제 화면에 단어가 하나씩 무작위로 나타납니다. 피실험자는 자연스럽게 바라보고, 나머지 팀원은 관찰하십시오.</p>
-<div class="notice">다음 단어가 무엇인지 미리 보여주지 않습니다.</div>
-<button class="btn primary" onclick="runStimulusTest()">자극 테스트 시작</button>
-<div id="stimulusArea" style="text-align:center;margin-top:18px"></div>`;
+  if(s===4)h+=`
+  <h2>단어 자극 심박 반응 테스트</h2>
+  <p>이번에는 손가락을 카메라와 플래시에 계속 올린 상태에서 단어가 하나씩 무작위로 나타납니다.</p>
+  <div class="notice">각 단어가 나타날 때의 맥박 변화를 기준 심박수와 비교합니다. 다음 단어 목록은 미리 공개되지 않습니다.</div>
+  ${ppgView()}
+  <button id="stimBtn" class="btn primary" onclick="runStimulusTest()">자극 테스트 시작</button>
+  <div id="stimulusArea" style="text-align:center;margin-top:18px"></div>
+  <div id="ppgMsg" class="notice">측정이 시작되면 끝날 때까지 손가락을 카메라에서 떼지 마십시오.</div>`;
 
-if(s===5)h+=`
-<h2>우리 팀의 반응 결과 해석</h2>
-<p>가장 큰 반응이 비밀 단어와 일치했는지 비교하십시오.</p>
-<div class="notice">일치해도, 일치하지 않아도 모두 가능한 결과입니다. 움직임·긴장·단어의 개인적 의미·측정 오차가 영향을 줄 수 있습니다.</div>
-${renderStimulusResults()}`;
+  if(s===5)h+=`
+  <h2>우리 팀의 실제 심박 반응 결과</h2>
+  <p>기준 심박수와 각 단어 제시 구간에서 계산된 심박수를 비교하십시오.</p>
+  ${renderStimulusResults()}
+  <div class="notice warn">심박수 변화가 가장 컸던 단어가 비밀 단어와 일치하더라도, 긴장·움직임·호흡·측정오차 등의 영향을 받을 수 있습니다.</div>
+  <button class="btn primary" onclick="S.q3.review=1;save();toast('결과 검토 완료')">결과 검토 완료</button>`;
 
-if(s===6)h+=`
-<h2>한도윤의 가상 생체신호 기록</h2>
-<p>이제 수사 기록에 포함된 한도윤의 사전 측정 데이터를 확인하십시오.</p>
-<div class="matrix"><table>
-<tr><th>제시 단어</th><th>신호 변화</th></tr>
-<tr><td>현미경</td><td>+2.4%</td></tr>
-<tr><td>USB</td><td>+1.9%</td></tr>
-<tr><td>비커</td><td>+3.1%</td></tr>
-<tr><td>보라색 라텍스 장갑</td><td>+12.4%</td></tr>
-<tr><td>복사기</td><td>+2.7%</td></tr>
-<tr><td>유리병</td><td>+3.0%</td></tr>
-</table></div>
-<div class="notice warn">‘보라색 라텍스 장갑’은 사건 현장에서 공개되지 않은 정보입니다.</div>`;
+  if(s===6)h+=`
+  <h2>한도윤의 가상 생체신호 기록</h2>
+  <p>이제 수사 기록에 포함된 한도윤의 사전 측정 데이터를 확인하십시오.</p>
+  <div class="matrix"><table>
+  <tr><th>제시 단어</th><th>심박 반응 변화</th></tr>
+  <tr><td>현미경</td><td>+2.4%</td></tr>
+  <tr><td>USB</td><td>+1.9%</td></tr>
+  <tr><td>비커</td><td>+3.1%</td></tr>
+  <tr><td>보라색 라텍스 장갑</td><td>+12.4%</td></tr>
+  <tr><td>복사기</td><td>+2.7%</td></tr>
+  <tr><td>유리병</td><td>+3.0%</td></tr>
+  </table></div>
+  <div class="notice warn">‘보라색 라텍스 장갑’은 사건 현장에서 일반에 공개되지 않은 정보입니다.</div>`;
 
-if(s===7)h+=`
-<h2>증거 해석</h2>
-<p>한도윤은 다른 단어보다 ‘보라색 라텍스 장갑’에서 훨씬 큰 반응을 보였습니다.</p>
-<div class="notice">이 결과는 한도윤이 공개되지 않은 사건 정보에 특별한 인지적·정서적 반응을 보였을 가능성을 시사할 수 있습니다. 그러나 이것만으로 범행이나 거짓말을 확정할 수는 없습니다.</div>
-<p>최종 답안에서는 <b>무엇을 시사하는지</b>와 <b>왜 단정할 수 없는지</b>를 함께 설명하십시오.</p>`;
+  if(s===7)h+=`
+  <h2>증거 해석</h2>
+  <p>한도윤은 다른 단어보다 ‘보라색 라텍스 장갑’에서 훨씬 큰 심박 반응 변화를 보였습니다.</p>
+  <div class="notice">이 결과는 한도윤이 공개되지 않은 사건 정보에 특별한 인지적·정서적 반응을 보였을 가능성을 시사할 수 있습니다.</div>
+  <div class="notice warn">하지만 심박 반응은 긴장, 놀람, 개인적 연상, 움직임 등 다양한 원인으로 달라질 수 있으므로 이것만으로 범행이나 거짓말을 확정할 수 없습니다.</div>`;
 
-if(s===8)h+=`
-<h2>QUEST 3 최종 답안</h2>
-<p>한도윤이 ‘보라색 라텍스 장갑’에 보인 큰 생체신호 반응은 무엇을 의미할 수 있습니까? 또한 이 결과만으로 범인이라고 단정할 수 없는 이유를 함께 서술하십시오.</p>
-<textarea id="writtenQ3" placeholder="예: 한도윤은 공개되지 않은 현장 정보인 보라색 라텍스 장갑에 큰 반응을 보였으므로 ... 가능성이 있다. 그러나 PPG 반응은 ...의 영향을 받을 수 있으므로 ...">${S.written[3]||""}</textarea>
-<button class="btn" onclick="saveWritten(3,'writtenQ3')">답안 임시 저장</button>
-<div class="notice warn">답안을 제출하면 팀 전체가 교사 승인 대기 상태가 됩니다.</div>`;
+  if(s===8)h+=`
+  <h2>QUEST 3 최종 답안</h2>
+  <p>한도윤이 ‘보라색 라텍스 장갑’에 보인 큰 심박 반응은 무엇을 의미할 수 있습니까? 또한 이 결과만으로 범인이라고 단정할 수 없는 이유를 함께 서술하십시오.</p>
+  <textarea id="writtenQ3" placeholder="예: 한도윤은 공개되지 않은 현장 정보인 보라색 라텍스 장갑에 큰 심박 반응을 보였으므로 ... 가능성이 있다. 그러나 심박수는 ...의 영향을 받을 수 있으므로 ...">${S.written[3]||""}</textarea>
+  <button class="btn" onclick="saveWritten(3,'writtenQ3')">답안 임시 저장</button>
+  <div class="notice warn">답안을 제출하면 팀 전체가 교사 승인 대기 상태가 됩니다.</div>`;
 
-qbody.innerHTML=h
+  qbody.innerHTML=h;
+}
+
+function ppgView(){
+  return `<div class="camera">
+    <video id="ppgCam" playsinline muted></video>
+    <div class="ret"></div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><b id="liveBpm">--</b><span>현재 BPM</span></div>
+    <div class="metric"><b id="ppgQuality">대기</b><span>신호 상태</span></div>
+    <div class="metric"><b id="ppgTimer">--</b><span>남은 시간</span></div>
+  </div>`;
 }
 
 function revealSecretWord(){
   const box=document.getElementById("secretBox");
   if(!box)return;
+  S.q3.secret=1;
+  save();
   box.innerHTML=`
     <div class="notice" style="margin-top:16px;text-align:center">
       <div class="muted" style="font-size:12px">피실험자만 5초 동안 확인</div>
       <div style="font-size:30px;letter-spacing:1px;margin:8px 0">보라색 라텍스 장갑</div>
-      <div class="muted">기억한 뒤 화면을 다른 팀원에게 다시 보여주지 마십시오.</div>
+      <div class="muted">기억한 뒤 다른 팀원에게 말하지 마십시오.</div>
     </div>`;
   setTimeout(()=>{
     if(box){
       box.innerHTML=`<div class="notice" style="margin-top:16px;text-align:center">비밀 단어가 숨겨졌습니다. 피실험자는 내용을 말하지 마십시오.</div>`;
     }
   },5000);
+}
+
+let ppgSamples=[];
+let ppgFrame=null;
+let ppgCanvas=null;
+let ppgCtx=null;
+
+async function startPpgCamera(){
+  stopPpg();
+  stopCam();
+
+  if(!window.isSecureContext) throw Object.assign(new Error("secure"),{name:"SecurityError"});
+  if(!navigator.mediaDevices?.getUserMedia) throw Object.assign(new Error("unsupported"),{name:"NotSupportedError"});
+
+  stream=await navigator.mediaDevices.getUserMedia({
+    video:{
+      facingMode:{ideal:"environment"},
+      width:{ideal:640},
+      height:{ideal:480},
+      frameRate:{ideal:30}
+    },
+    audio:false
+  });
+
+  const v=document.getElementById("ppgCam");
+  if(!v) throw Object.assign(new Error("video missing"),{name:"VideoElementError"});
+  v.srcObject=stream;
+  await v.play();
+
+  const track=stream.getVideoTracks()[0];
+  try{
+    const caps=track.getCapabilities?.();
+    if(caps?.torch){
+      await track.applyConstraints({advanced:[{torch:true}]});
+    }
+  }catch(e){ console.warn("Torch unavailable",e); }
+
+  ppgCanvas=document.createElement("canvas");
+  ppgCanvas.width=64;
+  ppgCanvas.height=64;
+  ppgCtx=ppgCanvas.getContext("2d",{willReadFrequently:true});
+  ppgSamples=[];
+
+  const loop=()=>{
+    if(v.videoWidth && ppgCtx){
+      ppgCtx.drawImage(v,0,0,64,64);
+      const d=ppgCtx.getImageData(0,0,64,64).data;
+      let r=0,g=0,b=0,n=d.length/4;
+      for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
+      r/=n; g/=n; b/=n;
+
+      // Finger-over-lens PPG: red-dominant transmitted/reflected light.
+      const value = r;
+      const now=performance.now();
+      ppgSamples.push({t:now,v:value,r,g,b});
+      if(ppgSamples.length>1200) ppgSamples.shift();
+
+      const q=document.getElementById("ppgQuality");
+      if(q){
+        const redDominance=r-(g+b)/2;
+        q.textContent = (r>80 && redDominance>15) ? "양호" : (r>45 ? "조정 필요" : "손가락 확인");
+      }
+
+      const live=document.getElementById("liveBpm");
+      if(live && ppgSamples.length>100){
+        const recent=ppgSamples.filter(x=>now-x.t<=10000);
+        const bpm=estimateBPM(recent);
+        if(bpm) live.textContent=bpm;
+      }
+    }
+    ppgFrame=requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+function stopPpg(){
+  if(ppgFrame){cancelAnimationFrame(ppgFrame);ppgFrame=null;}
+  if(stream){
+    try{
+      const tr=stream.getVideoTracks?.()[0];
+      if(tr) tr.applyConstraints({advanced:[{torch:false}]}).catch(()=>{});
+    }catch(e){}
+    stream.getTracks().forEach(t=>t.stop());
+    stream=null;
+  }
+}
+
+function estimateBPM(samples){
+  if(!samples || samples.length<50) return null;
+
+  // Use roughly the latest 12 s.
+  const end=samples[samples.length-1].t;
+  let a=samples.filter(x=>end-x.t<=12000);
+  if(a.length<50)return null;
+
+  const vals=a.map(x=>x.v);
+  // 3-point smoothing.
+  const sm=vals.map((v,i)=>{
+    const lo=Math.max(0,i-1), hi=Math.min(vals.length-1,i+1);
+    let s=0,c=0;
+    for(let j=lo;j<=hi;j++){s+=vals[j];c++}
+    return s/c;
+  });
+
+  // Detrend with ~1.0 second moving mean, based on observed fps.
+  const duration=(a[a.length-1].t-a[0].t)/1000;
+  const fps=Math.max(8,Math.min(60,a.length/Math.max(duration,0.1)));
+  const win=Math.max(7,Math.round(fps*1.0));
+  const x=new Array(sm.length);
+  let sum=0;
+  for(let i=0;i<sm.length;i++){
+    sum+=sm[i];
+    if(i>=win)sum-=sm[i-win];
+    const count=Math.min(i+1,win);
+    x[i]=sm[i]-sum/count;
+  }
+
+  const mean=x.reduce((a,b)=>a+b,0)/x.length;
+  const sd=Math.sqrt(x.reduce((a,b)=>a+(b-mean)*(b-mean),0)/x.length);
+  if(!isFinite(sd) || sd<0.15)return null;
+
+  const peaks=[];
+  const threshold=mean+sd*0.35;
+  for(let i=2;i<x.length-2;i++){
+    if(x[i]>threshold && x[i]>=x[i-1] && x[i]>x[i+1]){
+      const t=a[i].t;
+      if(!peaks.length || t-peaks[peaks.length-1]>=350){
+        peaks.push(t);
+      }else if(x[i]>x[i-1]){
+        peaks[peaks.length-1]=t;
+      }
+    }
+  }
+
+  const intervals=[];
+  for(let i=1;i<peaks.length;i++){
+    const dt=peaks[i]-peaks[i-1];
+    if(dt>=350 && dt<=1500) intervals.push(dt);
+  }
+  if(intervals.length<3)return null;
+  intervals.sort((a,b)=>a-b);
+  const med=intervals[Math.floor(intervals.length/2)];
+  const bpm=Math.round(60000/med);
+  return (bpm>=40 && bpm<=180)?bpm:null;
+}
+
+function ppgErrorMessage(e){
+  switch(e?.name){
+    case "NotAllowedError":
+    case "PermissionDeniedError":
+      return "카메라 권한이 차단되었습니다. 사이트 설정에서 카메라를 허용하세요.";
+    case "NotFoundError":
+      return "사용 가능한 후면 카메라를 찾지 못했습니다.";
+    case "NotReadableError":
+      return "다른 앱이 카메라를 사용 중일 수 있습니다. 다른 카메라 앱을 닫고 다시 시도하세요.";
+    case "SecurityError":
+      return "HTTPS 보안 연결에서만 심박 측정이 가능합니다.";
+    case "VideoElementError":
+      return "심박 측정 화면을 불러오지 못했습니다. 페이지를 새로고침하세요.";
+    default:
+      return `심박 측정을 시작하지 못했습니다: ${e?.name||"알 수 없는 오류"}`;
+  }
+}
+
+async function startBaselinePPG(){
+  const btn=document.getElementById("baseBtn");
+  const msg=document.getElementById("ppgMsg");
+  if(btn)btn.disabled=true;
+  try{
+    await startPpgCamera();
+    if(msg)msg.innerHTML="<b>측정 중...</b> 손가락을 렌즈와 플래시 위에 가볍게 고정하십시오.";
+    const start=performance.now();
+    for(let sec=15;sec>=1;sec--){
+      const t=document.getElementById("ppgTimer"); if(t)t.textContent=sec+"초";
+      await new Promise(r=>setTimeout(r,1000));
+    }
+    const samples=ppgSamples.filter(x=>x.t-start>=2500);
+    const bpm=estimateBPM(samples);
+    if(!bpm){
+      if(msg)msg.innerHTML="맥박 파형을 충분히 감지하지 못했습니다. 손가락으로 렌즈와 플래시를 모두 덮고 움직이지 않은 상태에서 다시 측정하세요.";
+      toast("맥박 신호가 불안정합니다. 다시 측정하세요.");
+      return;
+    }
+    S.q3.base={bpm:bpm,at:Date.now()};
+    save();
+    const live=document.getElementById("liveBpm"); if(live)live.textContent=bpm;
+    const timer=document.getElementById("ppgTimer"); if(timer)timer.textContent="완료";
+    if(msg)msg.innerHTML=`<b>기준 심박수 ${bpm} BPM 저장 완료</b><br>이 값과 단어 자극 중의 심박 변화를 비교합니다.`;
+    toast(`기준 심박수 ${bpm} BPM 저장`);
+  }catch(e){
+    if(msg)msg.textContent=ppgErrorMessage(e);
+    toast(ppgErrorMessage(e));
+  }finally{
+    stopPpg();
+    if(btn)btn.disabled=false;
+  }
+}
+
+async function runStimulusTest(){
+  if(!S.q3.base?.bpm){toast("먼저 기준 심박수를 측정하세요.");return;}
+  const btn=document.getElementById("stimBtn");
+  const area=document.getElementById("stimulusArea");
+  const msg=document.getElementById("ppgMsg");
+  if(btn)btn.disabled=true;
+
+  const words=["현미경","USB","비커","보라색 라텍스 장갑","복사기","유리병"];
+  // Fisher-Yates shuffle
+  for(let i=words.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [words[i],words[j]]=[words[j],words[i]];
+  }
+
+  try{
+    await startPpgCamera();
+    if(msg)msg.innerHTML="<b>측정 중.</b> 손가락을 끝까지 떼지 마십시오.";
+    const results=[];
+
+    // 5-second stabilization before first word.
+    for(let s=5;s>=1;s--){
+      if(area)area.innerHTML=`<div class="k">신호 안정화</div><div style="font-size:34px;margin:14px">준비 ${s}</div>`;
+      const t=document.getElementById("ppgTimer"); if(t)t.textContent=s+"초";
+      await new Promise(r=>setTimeout(r,1000));
+    }
+
+    for(let idx=0;idx<words.length;idx++){
+      const word=words[idx];
+      const segmentStart=performance.now();
+      if(area)area.innerHTML=`<div class="muted">${idx+1} / ${words.length}</div><div style="font-size:34px;margin:18px 0">${word}</div><div class="muted">자연스럽게 바라보십시오</div>`;
+
+      for(let s=8;s>=1;s--){
+        const t=document.getElementById("ppgTimer"); if(t)t.textContent=s+"초";
+        await new Promise(r=>setTimeout(r,1000));
+      }
+
+      const seg=ppgSamples.filter(x=>x.t>=segmentStart+1000 && x.t<=performance.now());
+      let bpm=estimateBPM(seg);
+      if(!bpm){
+        // Fallback to latest 10-sec rolling window; still real camera data.
+        const now=performance.now();
+        bpm=estimateBPM(ppgSamples.filter(x=>now-x.t<=10000));
+      }
+      const base=S.q3.base.bpm;
+      const pct=bpm ? +(((bpm-base)/base)*100).toFixed(1) : null;
+      results.push({word,bpm,pct});
+
+      if(idx<words.length-1){
+        if(area)area.innerHTML=`<div class="muted">다음 단어 준비</div><div style="font-size:38px;margin:18px">＋</div>`;
+        await new Promise(r=>setTimeout(r,2000));
+      }
+    }
+
+    S.q3.test=results;
+    save();
+    if(area)area.innerHTML=`<div class="notice"><b>자극 테스트 완료</b><br>다음 단계에서 각 단어 구간의 실제 측정값을 비교합니다.</div>`;
+    if(msg)msg.textContent="측정이 완료되었습니다.";
+    const t=document.getElementById("ppgTimer"); if(t)t.textContent="완료";
+    toast("실제 PPG 심박 반응 측정 완료");
+  }catch(e){
+    if(msg)msg.textContent=ppgErrorMessage(e);
+    toast(ppgErrorMessage(e));
+  }finally{
+    stopPpg();
+    if(btn)btn.disabled=false;
+  }
+}
+
+function renderStimulusResults(){
+  const base=S.q3.base?.bpm;
+  const arr=Array.isArray(S.q3.test)?S.q3.test:[];
+  if(!base || !arr.length){
+    return `<div class="notice warn">아직 저장된 심박 반응 결과가 없습니다.</div>`;
+  }
+
+  const valid=arr.filter(x=>Number.isFinite(x.pct));
+  let strongest=null;
+  if(valid.length){
+    strongest=valid.slice().sort((a,b)=>Math.abs(b.pct)-Math.abs(a.pct))[0];
+  }
+
+  return `<div class="notice"><b>기준 심박수: ${base} BPM</b></div>
+  <div class="matrix"><table>
+    <tr><th>제시 단어</th><th>측정 BPM</th><th>기준 대비 변화</th></tr>
+    ${arr.map(x=>`<tr><td>${x.word}</td><td>${x.bpm??"측정 불안정"}</td><td>${Number.isFinite(x.pct)?(x.pct>0?"+":"")+x.pct+"%":"-"}</td></tr>`).join("")}
+  </table></div>
+  ${strongest?`<div class="notice">가장 큰 변화가 관찰된 단어: <b>${strongest.word}</b> (${strongest.pct>0?"+":""}${strongest.pct}%)</div>`:""}`;
 }
 
 function q4(){let s=S.st,h=`<div class="k">QUEST 4 · ${s+1}/9</div>`,dist={scene:[9,7,5,4,2],1:[9,7,5,3,2],2:[9,7,5,4,2],3:[9,7,6,4,2],4:[9,8,5,4,2],5:[9,7,5,4,3],6:[8,7,5,4,2]},names=["","김서진","한도윤","윤가람","박세린","최민재","이채린"];
@@ -412,7 +719,13 @@ function assignHtml(){let n=S.size,A=n===4?[["요원 A","1,2"],["요원 B","3"],
 function filesHtml(d,n,ref){return assignHtml()+[1,2,3,4,5,6].map(i=>`<p><span class="k">#${i} ${n[i]}</span><br>이동거리: ${d[i].join(" · ")} cm</p>`).join("")+ref}
 function valid(){let q=S.q,s=S.st;if(q===1){if(s===2&&(!S.q1.preA||!S.q1.preB))return toast("A·B 반응 전 RGB를 모두 저장하세요."),0;if(s===3&&!S.q1.ctrl)return toast("변인 통제를 해결하세요."),0;if(s===6&&!S.q1.obs)return toast("육안 관찰을 저장하세요."),0;if(s===7&&(!S.q1.postA||!S.q1.postB))return toast("A·B 반응 후 RGB를 모두 저장하세요."),0;if(s===8&&!S.q1.reason)return toast("결과 해석을 완료하세요."),0;if(s===9&&((S.written[1]||"").trim().length<10))return toast("시료와 과학적 근거를 서술형으로 작성하세요."),0}
 if(q===2){if(s>=2&&s<=4&&!S.q2.p[["A","B","C"][s-2]])return toast("현재 측정 지점의 밝기와 표지판 관찰 결과를 저장하세요."),0;if(s===5&&((S.written[2]||"").trim().length<20))return toast("세 지점의 측정 결과를 근거로 20자 이상 서술하세요."),0}
-if(q===3){if(s===1&&!S.q3.secret)return toast("비밀 단어를 확인하세요."),0;if(s===3&&!S.q3.base)return toast("기준 측정을 완료하세요."),0;if(s===4&&!S.q3.test)return toast("자극 테스트를 완료하세요."),0;if(s===5&&!S.q3.review)return toast("결과를 검토하세요."),0;if(s===7&&((S.written[3]||"").trim().length<10))return toast("생체신호 결과의 의미와 한계를 서술하세요."),0}
+if(q===3){
+if(s===1&&!S.q3.secret)return toast("피실험자가 비밀 단어를 확인해야 합니다."),0;
+if(s===3&&!S.q3.base?.bpm)return toast("15초 기준 심박수 측정을 완료하세요."),0;
+if(s===4&&(!Array.isArray(S.q3.test)||!S.q3.test.length))return toast("단어 자극 심박 반응 테스트를 완료하세요."),0;
+if(s===5&&!S.q3.review)return toast("측정 결과를 검토한 뒤 '결과 검토 완료'를 누르세요."),0;
+if(s===8&&((S.written[3]||"").trim().length<10))return toast("심박 반응의 의미와 한계를 서술하세요."),0;
+}
 if(q===4){if(s===0&&!S.q4.p)return toast("원리를 확인하세요."),0;if(s===1&&!S.q4.scene)return toast("현장 DNA를 해독하세요."),0;if(s===3&&!S.q4.dec)return toast("개별 해독을 완료하세요."),0;if(s===5&&!S.q4.table)return toast("비교표를 확인하세요."),0;if(s===6&&!S.q4.trap)return toast("4/5 문제를 해결하세요."),0;if(s===7&&!S.q4.why)return toast("증거 해석을 완료하세요."),0;if(s===8&&((S.written[4]||"").trim().length<10))return toast("DNA 일치 용의자와 근거를 서술형으로 작성하세요."),0}return 1}
 
 function saveWritten(q,id){
